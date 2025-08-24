@@ -1,16 +1,16 @@
-﻿using ARPSynchronos.API.Routes;
-using ARPSynchronos.ARPConfiguration.Models;
-using ARPSynchronos.Services;
-using ARPSynchronos.Services.Mediator;
-using ARPSynchronos.Services.ServerConfiguration;
-using ARPSynchronos.Utils;
+﻿using MareSynchronos.API.Routes;
+using MareSynchronos.MareConfiguration.Models;
+using MareSynchronos.Services;
+using MareSynchronos.Services.Mediator;
+using MareSynchronos.Services.ServerConfiguration;
+using MareSynchronos.Utils;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
 using System.Reflection;
 
-namespace ARPSynchronos.WebAPI.SignalR;
+namespace MareSynchronos.WebAPI.SignalR;
 
 public sealed class TokenProvider : IDisposable, IMediatorSubscriber
 {
@@ -20,13 +20,13 @@ public sealed class TokenProvider : IDisposable, IMediatorSubscriber
     private readonly ServerConfigurationManager _serverManager;
     private readonly ConcurrentDictionary<JwtIdentifier, string> _tokenCache = new();
 
-    public TokenProvider(ILogger<TokenProvider> logger, ServerConfigurationManager serverManager, DalamudUtilService dalamudUtil, ARPMediator ARPMediator, HttpClient httpClient)
+    public TokenProvider(ILogger<TokenProvider> logger, ServerConfigurationManager serverManager, DalamudUtilService dalamudUtil, MareMediator mareMediator, HttpClient httpClient)
     {
         _logger = logger;
         _serverManager = serverManager;
         _dalamudUtil = dalamudUtil;
         var ver = Assembly.GetExecutingAssembly().GetName().Version;
-        Mediator = ARPMediator;
+        Mediator = mareMediator;
         _httpClient = httpClient;
         Mediator.Subscribe<DalamudLogoutMessage>(this, (_) =>
         {
@@ -40,7 +40,7 @@ public sealed class TokenProvider : IDisposable, IMediatorSubscriber
         });
     }
 
-    public ARPMediator Mediator { get; }
+    public MareMediator Mediator { get; }
 
     private JwtIdentifier? _lastJwtIdentifier;
 
@@ -63,7 +63,7 @@ public sealed class TokenProvider : IDisposable, IMediatorSubscriber
 
                 if (!_serverManager.CurrentServer.UseOAuth2)
                 {
-                    tokenUri = ARPAuth.AuthFullPath(new Uri(_serverManager.CurrentApiUrl
+                    tokenUri = MareAuth.AuthFullPath(new Uri(_serverManager.CurrentApiUrl
                         .Replace("wss://", "https://", StringComparison.OrdinalIgnoreCase)
                         .Replace("ws://", "http://", StringComparison.OrdinalIgnoreCase)));
                     var secretKey = _serverManager.GetSecretKey(out _)!;
@@ -77,7 +77,7 @@ public sealed class TokenProvider : IDisposable, IMediatorSubscriber
                 }
                 else
                 {
-                    tokenUri = ARPAuth.AuthWithOauthFullPath(new Uri(_serverManager.CurrentApiUrl
+                    tokenUri = MareAuth.AuthWithOauthFullPath(new Uri(_serverManager.CurrentApiUrl
                         .Replace("wss://", "https://", StringComparison.OrdinalIgnoreCase)
                         .Replace("ws://", "http://", StringComparison.OrdinalIgnoreCase)));
                     HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, tokenUri.ToString());
@@ -94,7 +94,7 @@ public sealed class TokenProvider : IDisposable, IMediatorSubscriber
             {
                 _logger.LogDebug("GetNewToken: Renewal");
 
-                tokenUri = ARPAuth.RenewTokenFullPath(new Uri(_serverManager.CurrentApiUrl
+                tokenUri = MareAuth.RenewTokenFullPath(new Uri(_serverManager.CurrentApiUrl
                     .Replace("wss://", "https://", StringComparison.OrdinalIgnoreCase)
                     .Replace("ws://", "http://", StringComparison.OrdinalIgnoreCase)));
                 HttpRequestMessage request = new(HttpMethod.Get, tokenUri.ToString());
@@ -115,13 +115,13 @@ public sealed class TokenProvider : IDisposable, IMediatorSubscriber
             if (ex.StatusCode == System.Net.HttpStatusCode.Unauthorized)
             {
                 if (isRenewal)
-                    Mediator.Publish(new NotificationMessage("Error refreshing token", "Your authentication token could not be renewed. Try reconnecting to ARP manually.",
+                    Mediator.Publish(new NotificationMessage("Error refreshing token", "Your authentication token could not be renewed. Try reconnecting to ARPSync manually.",
                     NotificationType.Error));
                 else
-                    Mediator.Publish(new NotificationMessage("Error generating token", "Your authentication token could not be generated. Check ARPs Main UI (/ARP in chat) to see the error message.",
+                    Mediator.Publish(new NotificationMessage("Error generating token", "Your authentication token could not be generated. Check ARPSync Main UI (/arp in chat) to see the error message.",
                     NotificationType.Error));
                 Mediator.Publish(new DisconnectedMessage());
-                throw new ARPAuthFailureException(response);
+                throw new MareAuthFailureException(response);
             }
 
             throw;
@@ -139,7 +139,7 @@ public sealed class TokenProvider : IDisposable, IMediatorSubscriber
         {
             _tokenCache.TryRemove(identifier, out _);
             Mediator.Publish(new NotificationMessage("Invalid system clock", "The clock of your computer is invalid. " +
-                "ARP will not function properly if the time zone is not set correctly. " +
+                "ARPSync will not function properly if the time zone is not set correctly. " +
                 "Please set your computers time zone correctly and keep your clock synchronized with the internet.",
                 NotificationType.Error));
             throw new InvalidOperationException($"JwtToken is behind DateTime.UtcNow, DateTime.UtcNow is possibly wrong. DateTime.UtcNow is {DateTime.UtcNow}, JwtToken.ValidTo is {jwtToken.ValidTo}");
@@ -253,7 +253,7 @@ public sealed class TokenProvider : IDisposable, IMediatorSubscriber
                 return false;
         }
 
-        var tokenUri = ARPAuth.RenewOAuthTokenFullPath(new Uri(currentServer.ServerUri
+        var tokenUri = MareAuth.RenewOAuthTokenFullPath(new Uri(currentServer.ServerUri
             .Replace("wss://", "https://", StringComparison.OrdinalIgnoreCase)
             .Replace("ws://", "http://", StringComparison.OrdinalIgnoreCase)));
         HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, tokenUri.ToString());

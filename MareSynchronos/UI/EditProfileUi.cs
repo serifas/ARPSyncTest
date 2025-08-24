@@ -4,22 +4,22 @@ using Dalamud.Interface.Colors;
 using Dalamud.Interface.ImGuiFileDialog;
 using Dalamud.Interface.Textures.TextureWraps;
 using Dalamud.Interface.Utility;
-using ARPSynchronos.API.Data;
-using ARPSynchronos.API.Dto.User;
-using ARPSynchronos.Services;
-using ARPSynchronos.Services.Mediator;
-using ARPSynchronos.WebAPI;
+using MareSynchronos.API.Data;
+using MareSynchronos.API.Dto.User;
+using MareSynchronos.Services;
+using MareSynchronos.Services.Mediator;
+using MareSynchronos.WebAPI;
 using Microsoft.Extensions.Logging;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
-namespace ARPSynchronos.UI;
+namespace MareSynchronos.UI;
 
 public class EditProfileUi : WindowMediatorSubscriberBase
 {
     private readonly ApiController _apiController;
     private readonly FileDialogManager _fileDialogManager;
-    private readonly ARPProfileManager _ARPProfileManager;
+    private readonly MareProfileManager _mareProfileManager;
     private readonly UiSharedService _uiSharedService;
     private bool _adjustedForScollBarsLocalProfile = false;
     private bool _adjustedForScollBarsOnlineProfile = false;
@@ -30,10 +30,10 @@ public class EditProfileUi : WindowMediatorSubscriberBase
     private bool _showFileDialogError = false;
     private bool _wasOpen;
 
-    public EditProfileUi(ILogger<EditProfileUi> logger, ARPMediator mediator,
+    public EditProfileUi(ILogger<EditProfileUi> logger, MareMediator mediator,
         ApiController apiController, UiSharedService uiSharedService, FileDialogManager fileDialogManager,
-        ARPProfileManager ARPProfileManager, PerformanceCollectorService performanceCollectorService)
-        : base(logger, mediator, "ARP Synchronos Edit Profile###ARPSynchronosEditProfileUI", performanceCollectorService)
+        MareProfileManager mareProfileManager, PerformanceCollectorService performanceCollectorService)
+        : base(logger, mediator, "ARPSync Edit Profile###MareSynchronosEditProfileUI", performanceCollectorService)
     {
         IsOpen = false;
         this.SizeConstraints = new()
@@ -44,7 +44,7 @@ public class EditProfileUi : WindowMediatorSubscriberBase
         _apiController = apiController;
         _uiSharedService = uiSharedService;
         _fileDialogManager = fileDialogManager;
-        _ARPProfileManager = ARPProfileManager;
+        _mareProfileManager = mareProfileManager;
 
         Mediator.Subscribe<GposeStartMessage>(this, (_) => { _wasOpen = IsOpen; IsOpen = false; });
         Mediator.Subscribe<GposeEndMessage>(this, (_) => IsOpen = _wasOpen);
@@ -63,7 +63,7 @@ public class EditProfileUi : WindowMediatorSubscriberBase
     {
         _uiSharedService.BigText("Current Profile (as saved on server)");
 
-        var profile = _ARPProfileManager.GetARPProfile(new UserData(_apiController.UID));
+        var profile = _mareProfileManager.GetMareProfile(new UserData(_apiController.UID));
 
         if (profile.IsFlagged)
         {
@@ -126,7 +126,7 @@ public class EditProfileUi : WindowMediatorSubscriberBase
             $"- Other users have the possibility to report your profile for breaking the rules.{Environment.NewLine}" +
             $"- !!! AVOID: anything as profile image that can be considered highly illegal or obscene (bestiality, anything that could be considered a sexual act with a minor (that includes Lalafells), etc.){Environment.NewLine}" +
             $"- !!! AVOID: slurs of any kind in the description that can be considered highly offensive{Environment.NewLine}" +
-            $"- In case of valid reports from other users this can lead to disabling your profile forever or terminating your ARP account indefinitely.{Environment.NewLine}" +
+            $"- In case of valid reports from other users this can lead to disabling your profile forever or terminating your ARPSync account indefinitely.{Environment.NewLine}" +
             $"- Judgement of your profile validity from reports through staff is not up to debate and the decisions to disable your profile/account permanent.{Environment.NewLine}" +
             $"- If your profile picture or profile description could be considered NSFW, enable the toggle below.");
         ImGui.Separator();

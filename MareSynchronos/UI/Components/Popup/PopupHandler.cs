@@ -2,12 +2,12 @@
 using Dalamud.Interface;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
-using ARPSynchronos.Services;
-using ARPSynchronos.Services.Mediator;
+using MareSynchronos.Services;
+using MareSynchronos.Services.Mediator;
 using Microsoft.Extensions.Logging;
 using System.Numerics;
 
-namespace ARPSynchronos.UI.Components.Popup;
+namespace MareSynchronos.UI.Components.Popup;
 
 public class PopupHandler : WindowMediatorSubscriberBase
 {
@@ -16,9 +16,9 @@ public class PopupHandler : WindowMediatorSubscriberBase
     private readonly UiSharedService _uiSharedService;
     private IPopupHandler? _currentHandler = null;
 
-    public PopupHandler(ILogger<PopupHandler> logger, ARPMediator mediator, IEnumerable<IPopupHandler> popupHandlers,
+    public PopupHandler(ILogger<PopupHandler> logger, MareMediator mediator, IEnumerable<IPopupHandler> popupHandlers,
         PerformanceCollectorService performanceCollectorService, UiSharedService uiSharedService)
-        : base(logger, mediator, "ARPPopupHandler", performanceCollectorService)
+        : base(logger, mediator, "MarePopupHandler", performanceCollectorService)
     {
         Flags = ImGuiWindowFlags.NoBringToFrontOnFocus
           | ImGuiWindowFlags.NoDecoration

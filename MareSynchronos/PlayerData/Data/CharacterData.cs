@@ -1,8 +1,8 @@
-﻿using ARPSynchronos.API.Data;
+﻿using MareSynchronos.API.Data;
 
-using ARPSynchronos.API.Data.Enum;
+using MareSynchronos.API.Data.Enum;
 
-namespace ARPSynchronos.PlayerData.Data;
+namespace MareSynchronos.PlayerData.Data;
 
 public class CharacterData
 {

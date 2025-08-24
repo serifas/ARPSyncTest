@@ -1,17 +1,17 @@
-﻿using ARPSynchronos.Interop.Ipc;
-using ARPSynchronos.ARPConfiguration;
-using ARPSynchronos.Services;
-using ARPSynchronos.Services.Mediator;
-using ARPSynchronos.Utils;
+﻿using MareSynchronos.Interop.Ipc;
+using MareSynchronos.MareConfiguration;
+using MareSynchronos.Services;
+using MareSynchronos.Services.Mediator;
+using MareSynchronos.Utils;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
 
-namespace ARPSynchronos.FileCache;
+namespace MareSynchronos.FileCache;
 
 public sealed class CacheMonitor : DisposableMediatorSubscriberBase
 {
-    private readonly ARPConfigService _configService;
+    private readonly MareConfigService _configService;
     private readonly DalamudUtilService _dalamudUtil;
     private readonly FileCompactor _fileCompactor;
     private readonly FileCacheManager _fileDbManager;
@@ -22,8 +22,8 @@ public sealed class CacheMonitor : DisposableMediatorSubscriberBase
     private readonly CancellationTokenSource _periodicCalculationTokenSource = new();
     public static readonly IImmutableList<string> AllowedFileExtensions = [".mdl", ".tex", ".mtrl", ".tmb", ".pap", ".avfx", ".atex", ".sklb", ".eid", ".phyb", ".pbd", ".scd", ".skp", ".shpk"];
 
-    public CacheMonitor(ILogger<CacheMonitor> logger, IpcManager ipcManager, ARPConfigService configService,
-        FileCacheManager fileDbManager, ARPMediator mediator, PerformanceCollectorService performanceCollector, DalamudUtilService dalamudUtil,
+    public CacheMonitor(ILogger<CacheMonitor> logger, IpcManager ipcManager, MareConfigService configService,
+        FileCacheManager fileDbManager, MareMediator mediator, PerformanceCollectorService performanceCollector, DalamudUtilService dalamudUtil,
         FileCompactor fileCompactor) : base(logger, mediator)
     {
         _ipcManager = ipcManager;
@@ -35,14 +35,14 @@ public sealed class CacheMonitor : DisposableMediatorSubscriberBase
         Mediator.Subscribe<PenumbraInitializedMessage>(this, (_) =>
         {
             StartPenumbraWatcher(_ipcManager.Penumbra.ModDirectory);
-            StartARPWatcher(configService.Current.CacheFolder);
+            StartMareWatcher(configService.Current.CacheFolder);
             InvokeScan();
         });
         Mediator.Subscribe<HaltScanMessage>(this, (msg) => HaltScan(msg.Source));
         Mediator.Subscribe<ResumeScanMessage>(this, (msg) => ResumeScan(msg.Source));
         Mediator.Subscribe<DalamudLoginMessage>(this, (_) =>
         {
-            StartARPWatcher(configService.Current.CacheFolder);
+            StartMareWatcher(configService.Current.CacheFolder);
             StartPenumbraWatcher(_ipcManager.Penumbra.ModDirectory);
             InvokeScan();
         });
@@ -57,7 +57,7 @@ public sealed class CacheMonitor : DisposableMediatorSubscriberBase
         }
         if (configService.Current.HasValidSetup())
         {
-            StartARPWatcher(configService.Current.CacheFolder);
+            StartMareWatcher(configService.Current.CacheFolder);
             InvokeScan();
         }
 
@@ -102,26 +102,26 @@ public sealed class CacheMonitor : DisposableMediatorSubscriberBase
 
     record WatcherChange(WatcherChangeTypes ChangeType, string? OldPath = null);
     private readonly Dictionary<string, WatcherChange> _watcherChanges = new Dictionary<string, WatcherChange>(StringComparer.OrdinalIgnoreCase);
-    private readonly Dictionary<string, WatcherChange> _ARPChanges = new Dictionary<string, WatcherChange>(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, WatcherChange> _mareChanges = new Dictionary<string, WatcherChange>(StringComparer.OrdinalIgnoreCase);
 
     public void StopMonitoring()
     {
-        Logger.LogInformation("Stopping monitoring of Penumbra and ARP storage folders");
-        ARPWatcher?.Dispose();
+        Logger.LogInformation("Stopping monitoring of Penumbra and ARPSync storage folders");
+        MareWatcher?.Dispose();
         PenumbraWatcher?.Dispose();
-        ARPWatcher = null;
+        MareWatcher = null;
         PenumbraWatcher = null;
     }
 
     public bool StorageisNTFS { get; private set; } = false;
 
-    public void StartARPWatcher(string? ARPPath)
+    public void StartMareWatcher(string? marePath)
     {
-        ARPWatcher?.Dispose();
-        if (string.IsNullOrEmpty(ARPPath) || !Directory.Exists(ARPPath))
+        MareWatcher?.Dispose();
+        if (string.IsNullOrEmpty(marePath) || !Directory.Exists(marePath))
         {
-            ARPWatcher = null;
-            Logger.LogWarning("ARP file path is not set, cannot start the FSW for ARP.");
+            MareWatcher = null;
+            Logger.LogWarning("ARP file path is not set, cannot start the FSW for ARPSync.");
             return;
         }
 
@@ -129,10 +129,10 @@ public sealed class CacheMonitor : DisposableMediatorSubscriberBase
         StorageisNTFS = string.Equals("NTFS", di.DriveFormat, StringComparison.OrdinalIgnoreCase);
         Logger.LogInformation("ARP Storage is on NTFS drive: {isNtfs}", StorageisNTFS);
 
-        Logger.LogDebug("Initializing ARP FSW on {path}", ARPPath);
-        ARPWatcher = new()
+        Logger.LogDebug("Initializing ARP FSW on {path}", marePath);
+        MareWatcher = new()
         {
-            Path = ARPPath,
+            Path = marePath,
             InternalBufferSize = 8388608,
             NotifyFilter = NotifyFilters.CreationTime
                 | NotifyFilters.LastWrite
@@ -143,12 +143,12 @@ public sealed class CacheMonitor : DisposableMediatorSubscriberBase
             IncludeSubdirectories = false,
         };
 
-        ARPWatcher.Deleted += ARPWatcher_FileChanged;
-        ARPWatcher.Created += ARPWatcher_FileChanged;
-        ARPWatcher.EnableRaisingEvents = true;
+        MareWatcher.Deleted += MareWatcher_FileChanged;
+        MareWatcher.Created += MareWatcher_FileChanged;
+        MareWatcher.EnableRaisingEvents = true;
     }
 
-    private void ARPWatcher_FileChanged(object sender, FileSystemEventArgs e)
+    private void MareWatcher_FileChanged(object sender, FileSystemEventArgs e)
     {
         Logger.LogTrace("ARP FSW: FileChanged: {change} => {path}", e.ChangeType, e.FullPath);
 
@@ -156,10 +156,10 @@ public sealed class CacheMonitor : DisposableMediatorSubscriberBase
 
         lock (_watcherChanges)
         {
-            _ARPChanges[e.FullPath] = new(e.ChangeType);
+            _mareChanges[e.FullPath] = new(e.ChangeType);
         }
 
-        _ = ARPWatcherExecution();
+        _ = MareWatcherExecution();
     }
 
     public void StartPenumbraWatcher(string? penumbraPath)
@@ -247,18 +247,18 @@ public sealed class CacheMonitor : DisposableMediatorSubscriberBase
     }
 
     private CancellationTokenSource _penumbraFswCts = new();
-    private CancellationTokenSource _ARPFswCts = new();
+    private CancellationTokenSource _mareFswCts = new();
     public FileSystemWatcher? PenumbraWatcher { get; private set; }
-    public FileSystemWatcher? ARPWatcher { get; private set; }
+    public FileSystemWatcher? MareWatcher { get; private set; }
 
-    private async Task ARPWatcherExecution()
+    private async Task MareWatcherExecution()
     {
-        _ARPFswCts = _ARPFswCts.CancelRecreate();
-        var token = _ARPFswCts.Token;
+        _mareFswCts = _mareFswCts.CancelRecreate();
+        var token = _mareFswCts.Token;
         var delay = TimeSpan.FromSeconds(5);
         Dictionary<string, WatcherChange> changes;
-        lock (_ARPChanges)
-            changes = _ARPChanges.ToDictionary(t => t.Key, t => t.Value, StringComparer.Ordinal);
+        lock (_mareChanges)
+            changes = _mareChanges.ToDictionary(t => t.Key, t => t.Value, StringComparer.Ordinal);
         try
         {
             do
@@ -271,11 +271,11 @@ public sealed class CacheMonitor : DisposableMediatorSubscriberBase
             return;
         }
 
-        lock (_ARPChanges)
+        lock (_mareChanges)
         {
             foreach (var key in changes.Keys)
             {
-                _ARPChanges.Remove(key);
+                _mareChanges.Remove(key);
             }
         }
 
@@ -458,9 +458,9 @@ public sealed class CacheMonitor : DisposableMediatorSubscriberBase
         base.Dispose(disposing);
         _scanCancellationTokenSource?.Cancel();
         PenumbraWatcher?.Dispose();
-        ARPWatcher?.Dispose();
+        MareWatcher?.Dispose();
         _penumbraFswCts?.CancelDispose();
-        _ARPFswCts?.CancelDispose();
+        _mareFswCts?.CancelDispose();
         _periodicCalculationTokenSource?.CancelDispose();
     }
 
@@ -681,7 +681,7 @@ public sealed class CacheMonitor : DisposableMediatorSubscriberBase
         {
             _configService.Current.InitialScanComplete = true;
             _configService.Save();
-            StartARPWatcher(_configService.Current.CacheFolder);
+            StartMareWatcher(_configService.Current.CacheFolder);
             StartPenumbraWatcher(penumbraDir);
         }
     }

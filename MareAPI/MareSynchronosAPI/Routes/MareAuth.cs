@@ -1,6 +1,6 @@
-﻿namespace ARPSynchronos.API.Routes;
+﻿namespace MareSynchronos.API.Routes;
 
-public class ARPAuth
+public class MareAuth
 {
     public const string OAuth = "/oauth";
     public const string Auth = "/auth";

@@ -2,15 +2,15 @@
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Utility.Raii;
-using ARPSynchronos.Services;
-using ARPSynchronos.Services.Events;
-using ARPSynchronos.Services.Mediator;
+using MareSynchronos.Services;
+using MareSynchronos.Services.Events;
+using MareSynchronos.Services.Mediator;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Globalization;
 using System.Numerics;
 
-namespace ARPSynchronos.UI;
+namespace MareSynchronos.UI;
 
 internal class EventViewerUI : WindowMediatorSubscriberBase
 {
@@ -37,7 +37,7 @@ internal class EventViewerUI : WindowMediatorSubscriberBase
         }
     }
 
-    public EventViewerUI(ILogger<EventViewerUI> logger, ARPMediator mediator,
+    public EventViewerUI(ILogger<EventViewerUI> logger, MareMediator mediator,
         EventAggregator eventAggregator, UiSharedService uiSharedService, PerformanceCollectorService performanceCollectorService)
         : base(logger, mediator, "Event Viewer", performanceCollectorService)
     {

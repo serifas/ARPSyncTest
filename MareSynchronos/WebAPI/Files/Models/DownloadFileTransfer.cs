@@ -1,6 +1,6 @@
-﻿using ARPSynchronos.API.Dto.Files;
+﻿using MareSynchronos.API.Dto.Files;
 
-namespace ARPSynchronos.WebAPI.Files.Models;
+namespace MareSynchronos.WebAPI.Files.Models;
 
 public class DownloadFileTransfer : FileTransfer
 {

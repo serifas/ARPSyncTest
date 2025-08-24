@@ -2,12 +2,12 @@
 using Dalamud.Plugin;
 using Dalamud.Plugin.Ipc;
 using Dalamud.Utility;
-using ARPSynchronos.Services;
-using ARPSynchronos.Services.Mediator;
+using MareSynchronos.Services;
+using MareSynchronos.Services.Mediator;
 using Microsoft.Extensions.Logging;
 using System.Text;
 
-namespace ARPSynchronos.Interop.Ipc;
+namespace MareSynchronos.Interop.Ipc;
 
 public sealed class IpcCallerCustomize : IIpcCaller
 {
@@ -20,10 +20,10 @@ public sealed class IpcCallerCustomize : IIpcCaller
     private readonly ICallGateSubscriber<Guid, int> _customizePlusDeleteByUniqueId;
     private readonly ILogger<IpcCallerCustomize> _logger;
     private readonly DalamudUtilService _dalamudUtil;
-    private readonly ARPMediator _ARPMediator;
+    private readonly MareMediator _mareMediator;
 
     public IpcCallerCustomize(ILogger<IpcCallerCustomize> logger, IDalamudPluginInterface dalamudPluginInterface,
-        DalamudUtilService dalamudUtil, ARPMediator ARPMediator)
+        DalamudUtilService dalamudUtil, MareMediator mareMediator)
     {
         _customizePlusApiVersion = dalamudPluginInterface.GetIpcSubscriber<(int, int)>("CustomizePlus.General.GetApiVersion");
         _customizePlusGetActiveProfile = dalamudPluginInterface.GetIpcSubscriber<ushort, (int, Guid?)>("CustomizePlus.Profile.GetActiveProfileIdOnCharacter");
@@ -36,7 +36,7 @@ public sealed class IpcCallerCustomize : IIpcCaller
         _customizePlusOnScaleUpdate.Subscribe(OnCustomizePlusScaleChange);
         _logger = logger;
         _dalamudUtil = dalamudUtil;
-        _ARPMediator = ARPMediator;
+        _mareMediator = mareMediator;
 
         CheckAPI();
     }
@@ -129,7 +129,7 @@ public sealed class IpcCallerCustomize : IIpcCaller
     private void OnCustomizePlusScaleChange(ushort c, Guid g)
     {
         var obj = _dalamudUtil.GetCharacterFromObjectTableByIndex(c);
-        _ARPMediator.Publish(new CustomizePlusMessage(obj?.Address ?? null));
+        _mareMediator.Publish(new CustomizePlusMessage(obj?.Address ?? null));
     }
 
     public void Dispose()

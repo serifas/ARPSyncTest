@@ -1,7 +1,7 @@
-﻿using ARPSynchronos.API.Data;
+﻿using MareSynchronos.API.Data;
 using MessagePack;
 
-namespace ARPSynchronos.API.Dto.CharaData;
+namespace MareSynchronos.API.Dto.CharaData;
 
 [MessagePackObject(keyAsPropertyName: true)]
 public record CharaDataMetaInfoDto(string Id, UserData Uploader) : CharaDataDto(Id, Uploader)

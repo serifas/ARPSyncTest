@@ -1,6 +1,6 @@
-﻿namespace ARPSynchronos.API.Routes;
+﻿namespace MareSynchronos.API.Routes;
 
-public class ARPFiles
+public class MareFiles
 {
     public const string Cache = "/cache";
     public const string Cache_Get = "get";

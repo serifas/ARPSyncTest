@@ -1,8 +1,8 @@
-﻿namespace ARPSynchronos.WebAPI.SignalR;
+﻿namespace MareSynchronos.WebAPI.SignalR;
 
-public class ARPAuthFailureException : Exception
+public class MareAuthFailureException : Exception
 {
-    public ARPAuthFailureException(string reason)
+    public MareAuthFailureException(string reason)
     {
         Reason = reason;
     }

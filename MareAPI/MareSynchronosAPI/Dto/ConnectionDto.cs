@@ -1,7 +1,7 @@
-﻿using ARPSynchronos.API.Data;
+﻿using MareSynchronos.API.Data;
 using MessagePack;
 
-namespace ARPSynchronos.API.Dto;
+namespace MareSynchronos.API.Dto;
 
 [MessagePackObject(keyAsPropertyName: true)]
 public record ConnectionDto(UserData User)

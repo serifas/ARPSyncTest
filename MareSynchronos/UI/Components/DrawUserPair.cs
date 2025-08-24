@@ -3,24 +3,24 @@ using Dalamud.Interface;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
-using ARPSynchronos.API.Data.Extensions;
-using ARPSynchronos.API.Dto.Group;
-using ARPSynchronos.API.Dto.User;
-using ARPSynchronos.ARPConfiguration;
-using ARPSynchronos.PlayerData.Pairs;
-using ARPSynchronos.Services;
-using ARPSynchronos.Services.Mediator;
-using ARPSynchronos.Services.ServerConfiguration;
-using ARPSynchronos.UI.Handlers;
-using ARPSynchronos.WebAPI;
+using MareSynchronos.API.Data.Extensions;
+using MareSynchronos.API.Dto.Group;
+using MareSynchronos.API.Dto.User;
+using MareSynchronos.MareConfiguration;
+using MareSynchronos.PlayerData.Pairs;
+using MareSynchronos.Services;
+using MareSynchronos.Services.Mediator;
+using MareSynchronos.Services.ServerConfiguration;
+using MareSynchronos.UI.Handlers;
+using MareSynchronos.WebAPI;
 
-namespace ARPSynchronos.UI.Components;
+namespace MareSynchronos.UI.Components;
 
 public class DrawUserPair
 {
     protected readonly ApiController _apiController;
     protected readonly IdDisplayHandler _displayHandler;
-    protected readonly ARPMediator _mediator;
+    protected readonly MareMediator _mediator;
     protected readonly List<GroupFullInfoDto> _syncedGroups;
     private readonly GroupFullInfoDto? _currentGroup;
     protected Pair _pair;
@@ -36,7 +36,7 @@ public class DrawUserPair
     public DrawUserPair(string id, Pair entry, List<GroupFullInfoDto> syncedGroups,
         GroupFullInfoDto? currentGroup,
         ApiController apiController, IdDisplayHandler uIDDisplayHandler,
-        ARPMediator ARPMediator, SelectTagForPairUi selectTagForPairUi,
+        MareMediator mareMediator, SelectTagForPairUi selectTagForPairUi,
         ServerConfigurationManager serverConfigurationManager,
         UiSharedService uiSharedService, PlayerPerformanceConfigService performanceConfigService,
         CharaDataManager charaDataManager)
@@ -47,7 +47,7 @@ public class DrawUserPair
         _currentGroup = currentGroup;
         _apiController = apiController;
         _displayHandler = uIDDisplayHandler;
-        _mediator = ARPMediator;
+        _mediator = mareMediator;
         _selectTagForPairUi = selectTagForPairUi;
         _serverConfigurationManager = serverConfigurationManager;
         _uiSharedService = uiSharedService;

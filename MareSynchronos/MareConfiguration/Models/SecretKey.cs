@@ -1,4 +1,4 @@
-﻿namespace ARPSynchronos.ARPConfiguration.Models;
+﻿namespace MareSynchronos.MareConfiguration.Models;
 
 [Serializable]
 public class SecretKey

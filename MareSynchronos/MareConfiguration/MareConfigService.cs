@@ -1,12 +1,12 @@
-﻿using ARPSynchronos.ARPConfiguration.Configurations;
+﻿using MareSynchronos.MareConfiguration.Configurations;
 
-namespace ARPSynchronos.ARPConfiguration;
+namespace MareSynchronos.MareConfiguration;
 
-public class ARPConfigService : ConfigurationServiceBase<ARPConfig>
+public class MareConfigService : ConfigurationServiceBase<MareConfig>
 {
     public const string ConfigName = "config.json";
 
-    public ARPConfigService(string configDir) : base(configDir)
+    public MareConfigService(string configDir) : base(configDir)
     {
     }
 

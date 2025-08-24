@@ -1,12 +1,12 @@
 ﻿using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Ipc;
-using ARPSynchronos.Services;
-using ARPSynchronos.Services.Mediator;
+using MareSynchronos.Services;
+using MareSynchronos.Services.Mediator;
 using Microsoft.Extensions.Logging;
 using System.Text;
 
-namespace ARPSynchronos.Interop.Ipc;
+namespace MareSynchronos.Interop.Ipc;
 
 public sealed class IpcCallerHonorific : IIpcCaller
 {
@@ -18,14 +18,14 @@ public sealed class IpcCallerHonorific : IIpcCaller
     private readonly ICallGateSubscriber<object> _honorificReady;
     private readonly ICallGateSubscriber<int, string, object> _honorificSetCharacterTitle;
     private readonly ILogger<IpcCallerHonorific> _logger;
-    private readonly ARPMediator _ARPMediator;
+    private readonly MareMediator _mareMediator;
     private readonly DalamudUtilService _dalamudUtil;
 
     public IpcCallerHonorific(ILogger<IpcCallerHonorific> logger, IDalamudPluginInterface pi, DalamudUtilService dalamudUtil,
-        ARPMediator ARPMediator)
+        MareMediator mareMediator)
     {
         _logger = logger;
-        _ARPMediator = ARPMediator;
+        _mareMediator = mareMediator;
         _dalamudUtil = dalamudUtil;
         _honorificApiVersion = pi.GetIpcSubscriber<(uint, uint)>("Honorific.ApiVersion");
         _honorificGetLocalCharacterTitle = pi.GetIpcSubscriber<string>("Honorific.GetLocalCharacterTitle");
@@ -115,18 +115,18 @@ public sealed class IpcCallerHonorific : IIpcCaller
 
     private void OnHonorificDisposing()
     {
-        _ARPMediator.Publish(new HonorificMessage(string.Empty));
+        _mareMediator.Publish(new HonorificMessage(string.Empty));
     }
 
     private void OnHonorificLocalCharacterTitleChanged(string titleJson)
     {
         string titleData = string.IsNullOrEmpty(titleJson) ? string.Empty : Convert.ToBase64String(Encoding.UTF8.GetBytes(titleJson));
-        _ARPMediator.Publish(new HonorificMessage(titleData));
+        _mareMediator.Publish(new HonorificMessage(titleData));
     }
 
     private void OnHonorificReady()
     {
         CheckAPI();
-        _ARPMediator.Publish(new HonorificReadyMessage());
+        _mareMediator.Publish(new HonorificReadyMessage());
     }
 }

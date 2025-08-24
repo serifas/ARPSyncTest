@@ -2,17 +2,17 @@
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
-using ARPSynchronos.API.Data.Enum;
-using ARPSynchronos.API.Data.Extensions;
-using ARPSynchronos.API.Dto;
-using ARPSynchronos.API.Dto.Group;
-using ARPSynchronos.Services;
-using ARPSynchronos.Services.Mediator;
-using ARPSynchronos.Utils;
-using ARPSynchronos.WebAPI;
+using MareSynchronos.API.Data.Enum;
+using MareSynchronos.API.Data.Extensions;
+using MareSynchronos.API.Dto;
+using MareSynchronos.API.Dto.Group;
+using MareSynchronos.Services;
+using MareSynchronos.Services.Mediator;
+using MareSynchronos.Utils;
+using MareSynchronos.WebAPI;
 using Microsoft.Extensions.Logging;
 
-namespace ARPSynchronos.UI;
+namespace MareSynchronos.UI;
 
 internal class JoinSyncshellUI : WindowMediatorSubscriberBase
 {
@@ -24,9 +24,9 @@ internal class JoinSyncshellUI : WindowMediatorSubscriberBase
     private string _previousPassword = string.Empty;
     private string _syncshellPassword = string.Empty;
 
-    public JoinSyncshellUI(ILogger<JoinSyncshellUI> logger, ARPMediator mediator,
+    public JoinSyncshellUI(ILogger<JoinSyncshellUI> logger, MareMediator mediator,
         UiSharedService uiSharedService, ApiController apiController, PerformanceCollectorService performanceCollectorService) 
-        : base(logger, mediator, "Join existing Syncshell###ARPSynchronosJoinSyncshell", performanceCollectorService)
+        : base(logger, mediator, "Join existing Syncshell###MareSynchronosJoinSyncshell", performanceCollectorService)
     {
         _uiSharedService = uiSharedService;
         _apiController = apiController;

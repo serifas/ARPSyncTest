@@ -1,11 +1,11 @@
-﻿using ARPSynchronos.Services.Mediator;
+﻿using MareSynchronos.Services.Mediator;
 using Microsoft.Extensions.Logging;
 
-namespace ARPSynchronos.Interop.Ipc;
+namespace MareSynchronos.Interop.Ipc;
 
 public sealed partial class IpcManager : DisposableMediatorSubscriberBase
 {
-    public IpcManager(ILogger<IpcManager> logger, ARPMediator mediator,
+    public IpcManager(ILogger<IpcManager> logger, MareMediator mediator,
         IpcCallerPenumbra penumbraIpc, IpcCallerGlamourer glamourerIpc, IpcCallerCustomize customizeIpc, IpcCallerHeels heelsIpc,
         IpcCallerHonorific honorificIpc, IpcCallerMoodles moodlesIpc, IpcCallerPetNames ipcCallerPetNames, IpcCallerBrio ipcCallerBrio) : base(logger, mediator)
     {

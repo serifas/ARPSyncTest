@@ -1,9 +1,9 @@
-﻿using ARPSynchronos.ARPConfiguration.Configurations;
+﻿using MareSynchronos.MareConfiguration.Configurations;
 using System.Text.Json;
 
-namespace ARPSynchronos.ARPConfiguration;
+namespace MareSynchronos.MareConfiguration;
 
-public abstract class ConfigurationServiceBase<T> : IConfigService<T> where T : IARPConfiguration
+public abstract class ConfigurationServiceBase<T> : IConfigService<T> where T : IMareConfiguration
 {
     private readonly CancellationTokenSource _periodicCheckCts = new();
     private DateTime _configLastWriteTime;

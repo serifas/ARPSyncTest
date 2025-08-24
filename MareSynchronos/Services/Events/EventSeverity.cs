@@ -1,4 +1,4 @@
-﻿namespace ARPSynchronos.Services.Events;
+﻿namespace MareSynchronos.Services.Events;
 
 public enum EventSeverity
 {

@@ -1,16 +1,16 @@
-﻿using ARPSynchronos.API.Data;
-using ARPSynchronos.API.Data.Enum;
-using ARPSynchronos.API.Dto;
-using ARPSynchronos.API.Dto.CharaData;
-using ARPSynchronos.API.Dto.Group;
-using ARPSynchronos.API.Dto.User;
-using ARPSynchronos.ARPConfiguration.Models;
-using ARPSynchronos.Services.Mediator;
+﻿using MareSynchronos.API.Data;
+using MareSynchronos.API.Data.Enum;
+using MareSynchronos.API.Dto;
+using MareSynchronos.API.Dto.CharaData;
+using MareSynchronos.API.Dto.Group;
+using MareSynchronos.API.Dto.User;
+using MareSynchronos.MareConfiguration.Models;
+using MareSynchronos.Services.Mediator;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Logging;
 using static FFXIVClientStructs.FFXIV.Client.Game.UI.MapMarkerData.Delegates;
 
-namespace ARPSynchronos.WebAPI;
+namespace MareSynchronos.WebAPI;
 
 public partial class ApiController
 {
@@ -227,163 +227,163 @@ public partial class ApiController
     public void OnDownloadReady(Action<Guid> act)
     {
         if (_initialized) return;
-        _ARPHub!.On(nameof(Client_DownloadReady), act);
+        _mareHub!.On(nameof(Client_DownloadReady), act);
     }
 
     public void OnGroupChangePermissions(Action<GroupPermissionDto> act)
     {
         if (_initialized) return;
-        _ARPHub!.On(nameof(Client_GroupChangePermissions), act);
+        _mareHub!.On(nameof(Client_GroupChangePermissions), act);
     }
 
     public void OnGroupChangeUserPairPermissions(Action<GroupPairUserPermissionDto> act)
     {
         if (_initialized) return;
-        _ARPHub!.On(nameof(Client_GroupChangeUserPairPermissions), act);
+        _mareHub!.On(nameof(Client_GroupChangeUserPairPermissions), act);
     }
 
     public void OnGroupDelete(Action<GroupDto> act)
     {
         if (_initialized) return;
-        _ARPHub!.On(nameof(Client_GroupDelete), act);
+        _mareHub!.On(nameof(Client_GroupDelete), act);
     }
 
     public void OnGroupPairChangeUserInfo(Action<GroupPairUserInfoDto> act)
     {
         if (_initialized) return;
-        _ARPHub!.On(nameof(Client_GroupPairChangeUserInfo), act);
+        _mareHub!.On(nameof(Client_GroupPairChangeUserInfo), act);
     }
 
     public void OnGroupPairJoined(Action<GroupPairFullInfoDto> act)
     {
         if (_initialized) return;
-        _ARPHub!.On(nameof(Client_GroupPairJoined), act);
+        _mareHub!.On(nameof(Client_GroupPairJoined), act);
     }
 
     public void OnGroupPairLeft(Action<GroupPairDto> act)
     {
         if (_initialized) return;
-        _ARPHub!.On(nameof(Client_GroupPairLeft), act);
+        _mareHub!.On(nameof(Client_GroupPairLeft), act);
     }
 
     public void OnGroupSendFullInfo(Action<GroupFullInfoDto> act)
     {
         if (_initialized) return;
-        _ARPHub!.On(nameof(Client_GroupSendFullInfo), act);
+        _mareHub!.On(nameof(Client_GroupSendFullInfo), act);
     }
 
     public void OnGroupSendInfo(Action<GroupInfoDto> act)
     {
         if (_initialized) return;
-        _ARPHub!.On(nameof(Client_GroupSendInfo), act);
+        _mareHub!.On(nameof(Client_GroupSendInfo), act);
     }
 
     public void OnReceiveServerMessage(Action<MessageSeverity, string> act)
     {
         if (_initialized) return;
-        _ARPHub!.On(nameof(Client_ReceiveServerMessage), act);
+        _mareHub!.On(nameof(Client_ReceiveServerMessage), act);
     }
 
     public void OnUpdateSystemInfo(Action<SystemInfoDto> act)
     {
         if (_initialized) return;
-        _ARPHub!.On(nameof(Client_UpdateSystemInfo), act);
+        _mareHub!.On(nameof(Client_UpdateSystemInfo), act);
     }
 
     public void OnUpdateUserIndividualPairStatusDto(Action<UserIndividualPairStatusDto> action)
     {
         if (_initialized) return;
-        _ARPHub!.On(nameof(Client_UpdateUserIndividualPairStatusDto), action);
+        _mareHub!.On(nameof(Client_UpdateUserIndividualPairStatusDto), action);
     }
 
     public void OnUserAddClientPair(Action<UserPairDto> act)
     {
         if (_initialized) return;
-        _ARPHub!.On(nameof(Client_UserAddClientPair), act);
+        _mareHub!.On(nameof(Client_UserAddClientPair), act);
     }
 
     public void OnUserDefaultPermissionUpdate(Action<DefaultPermissionsDto> act)
     {
         if (_initialized) return;
-        _ARPHub!.On(nameof(Client_UserUpdateDefaultPermissions), act);
+        _mareHub!.On(nameof(Client_UserUpdateDefaultPermissions), act);
     }
 
     public void OnUserReceiveCharacterData(Action<OnlineUserCharaDataDto> act)
     {
         if (_initialized) return;
-        _ARPHub!.On(nameof(Client_UserReceiveCharacterData), act);
+        _mareHub!.On(nameof(Client_UserReceiveCharacterData), act);
     }
 
     public void OnUserReceiveUploadStatus(Action<UserDto> act)
     {
         if (_initialized) return;
-        _ARPHub!.On(nameof(Client_UserReceiveUploadStatus), act);
+        _mareHub!.On(nameof(Client_UserReceiveUploadStatus), act);
     }
 
     public void OnUserRemoveClientPair(Action<UserDto> act)
     {
         if (_initialized) return;
-        _ARPHub!.On(nameof(Client_UserRemoveClientPair), act);
+        _mareHub!.On(nameof(Client_UserRemoveClientPair), act);
     }
 
     public void OnUserSendOffline(Action<UserDto> act)
     {
         if (_initialized) return;
-        _ARPHub!.On(nameof(Client_UserSendOffline), act);
+        _mareHub!.On(nameof(Client_UserSendOffline), act);
     }
 
     public void OnUserSendOnline(Action<OnlineUserIdentDto> act)
     {
         if (_initialized) return;
-        _ARPHub!.On(nameof(Client_UserSendOnline), act);
+        _mareHub!.On(nameof(Client_UserSendOnline), act);
     }
 
     public void OnUserUpdateOtherPairPermissions(Action<UserPermissionsDto> act)
     {
         if (_initialized) return;
-        _ARPHub!.On(nameof(Client_UserUpdateOtherPairPermissions), act);
+        _mareHub!.On(nameof(Client_UserUpdateOtherPairPermissions), act);
     }
 
     public void OnUserUpdateProfile(Action<UserDto> act)
     {
         if (_initialized) return;
-        _ARPHub!.On(nameof(Client_UserUpdateProfile), act);
+        _mareHub!.On(nameof(Client_UserUpdateProfile), act);
     }
 
     public void OnUserUpdateSelfPairPermissions(Action<UserPermissionsDto> act)
     {
         if (_initialized) return;
-        _ARPHub!.On(nameof(Client_UserUpdateSelfPairPermissions), act);
+        _mareHub!.On(nameof(Client_UserUpdateSelfPairPermissions), act);
     }
 
     public void OnGposeLobbyJoin(Action<UserData> act)
     {
         if (_initialized) return;
-        _ARPHub!.On(nameof(Client_GposeLobbyJoin), act);
+        _mareHub!.On(nameof(Client_GposeLobbyJoin), act);
     }
 
     public void OnGposeLobbyLeave(Action<UserData> act)
     {
         if (_initialized) return;
-        _ARPHub!.On(nameof(Client_GposeLobbyLeave), act);
+        _mareHub!.On(nameof(Client_GposeLobbyLeave), act);
     }
 
     public void OnGposeLobbyPushCharacterData(Action<CharaDataDownloadDto> act)
     {
         if (_initialized) return;
-        _ARPHub!.On(nameof(Client_GposeLobbyPushCharacterData), act);
+        _mareHub!.On(nameof(Client_GposeLobbyPushCharacterData), act);
     }
 
     public void OnGposeLobbyPushPoseData(Action<UserData, PoseData> act)
     {
         if (_initialized) return;
-        _ARPHub!.On(nameof(Client_GposeLobbyPushPoseData), act);
+        _mareHub!.On(nameof(Client_GposeLobbyPushPoseData), act);
     }
 
     public void OnGposeLobbyPushWorldData(Action<UserData, WorldData> act)
     {
         if (_initialized) return;
-        _ARPHub!.On(nameof(Client_GposeLobbyPushWorldData), act);
+        _mareHub!.On(nameof(Client_GposeLobbyPushWorldData), act);
     }
 
     private void ExecuteSafely(Action act)

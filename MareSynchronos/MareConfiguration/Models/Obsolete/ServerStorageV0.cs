@@ -1,4 +1,4 @@
-﻿namespace ARPSynchronos.ARPConfiguration.Models.Obsolete;
+﻿namespace MareSynchronos.MareConfiguration.Models.Obsolete;
 
 [Serializable]
 [Obsolete("Deprecated, use ServerStorage")]

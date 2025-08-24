@@ -1,9 +1,9 @@
 ﻿using Dalamud.Utility;
-using ARPSynchronos.API.Routes;
-using ARPSynchronos.ARPConfiguration;
-using ARPSynchronos.ARPConfiguration.Models;
-using ARPSynchronos.Services.Mediator;
-using ARPSynchronos.WebAPI;
+using MareSynchronos.API.Routes;
+using MareSynchronos.MareConfiguration;
+using MareSynchronos.MareConfiguration.Models;
+using MareSynchronos.Services.Mediator;
+using MareSynchronos.WebAPI;
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
@@ -12,31 +12,31 @@ using System.Net.Http.Json;
 using System.Security.Cryptography;
 using System.Text.Json;
 
-namespace ARPSynchronos.Services.ServerConfiguration;
+namespace MareSynchronos.Services.ServerConfiguration;
 
 public class ServerConfigurationManager
 {
     private readonly ServerConfigService _configService;
     private readonly DalamudUtilService _dalamudUtil;
-    private readonly ARPConfigService _ARPConfigService;
+    private readonly MareConfigService _mareConfigService;
     private readonly HttpClient _httpClient;
     private readonly ILogger<ServerConfigurationManager> _logger;
-    private readonly ARPMediator _ARPMediator;
+    private readonly MareMediator _mareMediator;
     private readonly NotesConfigService _notesConfig;
     private readonly ServerTagConfigService _serverTagConfig;
 
     public ServerConfigurationManager(ILogger<ServerConfigurationManager> logger, ServerConfigService configService,
         ServerTagConfigService serverTagConfig, NotesConfigService notesConfig, DalamudUtilService dalamudUtil,
-        ARPConfigService ARPConfigService, HttpClient httpClient, ARPMediator ARPMediator)
+        MareConfigService mareConfigService, HttpClient httpClient, MareMediator mareMediator)
     {
         _logger = logger;
         _configService = configService;
         _serverTagConfig = serverTagConfig;
         _notesConfig = notesConfig;
         _dalamudUtil = dalamudUtil;
-        _ARPConfigService = ARPConfigService;
+        _mareConfigService = mareConfigService;
         _httpClient = httpClient;
-        _ARPMediator = ARPMediator;
+        _mareMediator = mareMediator;
         EnsureMainExists();
     }
 
@@ -298,7 +298,7 @@ public class ServerConfigurationManager
     {
         CurrentServerTagStorage().ServerAvailablePairTags.Add(tag);
         _serverTagConfig.Save();
-        _ARPMediator.Publish(new RefreshUiMessage());
+        _mareMediator.Publish(new RefreshUiMessage());
     }
 
     internal void AddTagForUid(string uid, string tagName)
@@ -306,7 +306,7 @@ public class ServerConfigurationManager
         if (CurrentServerTagStorage().UidServerPairedUserTags.TryGetValue(uid, out var tags))
         {
             tags.Add(tagName);
-            _ARPMediator.Publish(new RefreshUiMessage());
+            _mareMediator.Publish(new RefreshUiMessage());
         }
         else
         {
@@ -410,7 +410,7 @@ public class ServerConfigurationManager
             RemoveTagForUid(uid, tag, save: false);
         }
         _serverTagConfig.Save();
-        _ARPMediator.Publish(new RefreshUiMessage());
+        _mareMediator.Publish(new RefreshUiMessage());
     }
 
     internal void RemoveTagForUid(string uid, string tagName, bool save = true)
@@ -422,7 +422,7 @@ public class ServerConfigurationManager
             if (save)
             {
                 _serverTagConfig.Save();
-                _ARPMediator.Publish(new RefreshUiMessage());
+                _mareMediator.Publish(new RefreshUiMessage());
             }
         }
     }
@@ -463,7 +463,7 @@ public class ServerConfigurationManager
 
     internal void AutoPopulateNoteForUid(string uid, string note)
     {
-        if (!_ARPConfigService.Current.AutoPopulateEmptyNotesFromCharaName
+        if (!_mareConfigService.Current.AutoPopulateEmptyNotesFromCharaName
             || GetNoteForUid(uid) != null)
             return;
 
@@ -512,7 +512,7 @@ public class ServerConfigurationManager
         try
         {
             var baseUri = serverUri.Replace("wss://", "https://").Replace("ws://", "http://");
-            var oauthCheckUri = ARPAuth.GetUIDsFullPath(new Uri(baseUri));
+            var oauthCheckUri = MareAuth.GetUIDsFullPath(new Uri(baseUri));
             _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
             var response = await _httpClient.GetAsync(oauthCheckUri).ConfigureAwait(false);
             var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
@@ -530,7 +530,7 @@ public class ServerConfigurationManager
         try
         {
             var baseUri = serverUri.Replace("wss://", "https://").Replace("ws://", "http://");
-            var oauthCheckUri = ARPAuth.GetDiscordOAuthEndpointFullPath(new Uri(baseUri));
+            var oauthCheckUri = MareAuth.GetDiscordOAuthEndpointFullPath(new Uri(baseUri));
             var response = await _httpClient.GetFromJsonAsync<Uri?>(oauthCheckUri).ConfigureAwait(false);
             return response;
         }
@@ -553,7 +553,7 @@ public class ServerConfigurationManager
         try
         {
             var baseUri = serverUri.Replace("wss://", "https://").Replace("ws://", "http://");
-            var oauthCheckUri = ARPAuth.GetDiscordOAuthTokenFullPath(new Uri(baseUri), sessionId);
+            var oauthCheckUri = MareAuth.GetDiscordOAuthTokenFullPath(new Uri(baseUri), sessionId);
             var response = await _httpClient.GetAsync(oauthCheckUri, linkedCts.Token).ConfigureAwait(false);
             discordToken = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
         }

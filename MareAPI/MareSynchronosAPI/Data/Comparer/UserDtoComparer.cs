@@ -1,6 +1,6 @@
-﻿using ARPSynchronos.API.Dto.User;
+﻿using MareSynchronos.API.Dto.User;
 
-namespace ARPSynchronos.API.Data.Comparer;
+namespace MareSynchronos.API.Data.Comparer;
 
 public class UserDtoComparer : IEqualityComparer<UserDto>
 {

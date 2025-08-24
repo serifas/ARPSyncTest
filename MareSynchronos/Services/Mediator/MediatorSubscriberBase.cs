@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace ARPSynchronos.Services.Mediator;
+namespace MareSynchronos.Services.Mediator;
 
 public abstract class MediatorSubscriberBase : IMediatorSubscriber
 {
-    protected MediatorSubscriberBase(ILogger logger, ARPMediator mediator)
+    protected MediatorSubscriberBase(ILogger logger, MareMediator mediator)
     {
         Logger = logger;
 
@@ -12,7 +12,7 @@ public abstract class MediatorSubscriberBase : IMediatorSubscriber
         Mediator = mediator;
     }
 
-    public ARPMediator Mediator { get; }
+    public MareMediator Mediator { get; }
     protected ILogger Logger { get; }
 
     protected void UnsubscribeAll()

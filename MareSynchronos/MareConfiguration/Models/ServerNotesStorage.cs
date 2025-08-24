@@ -1,4 +1,4 @@
-﻿namespace ARPSynchronos.ARPConfiguration.Models;
+﻿namespace MareSynchronos.MareConfiguration.Models;
 
 public class ServerNotesStorage
 {

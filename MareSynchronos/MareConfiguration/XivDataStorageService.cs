@@ -1,6 +1,6 @@
-﻿using ARPSynchronos.ARPConfiguration.Configurations;
+﻿using MareSynchronos.MareConfiguration.Configurations;
 
-namespace ARPSynchronos.ARPConfiguration;
+namespace MareSynchronos.MareConfiguration;
 
 public class XivDataStorageService : ConfigurationServiceBase<XivDataStorageConfig>
 {

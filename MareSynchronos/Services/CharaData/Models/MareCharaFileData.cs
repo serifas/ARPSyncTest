@@ -1,12 +1,12 @@
-﻿using ARPSynchronos.API.Data;
-using ARPSynchronos.API.Data.Enum;
-using ARPSynchronos.FileCache;
+﻿using MareSynchronos.API.Data;
+using MareSynchronos.API.Data.Enum;
+using MareSynchronos.FileCache;
 using System.Text;
 using System.Text.Json;
 
-namespace ARPSynchronos.Services.CharaData.Models;
+namespace MareSynchronos.Services.CharaData.Models;
 
-public record ARPCharaFileData
+public record MareCharaFileData
 {
     public string Description { get; set; } = string.Empty;
     public string GlamourerData { get; set; } = string.Empty;
@@ -15,8 +15,8 @@ public record ARPCharaFileData
     public List<FileData> Files { get; set; } = [];
     public List<FileSwap> FileSwaps { get; set; } = [];
 
-    public ARPCharaFileData() { }
-    public ARPCharaFileData(FileCacheManager manager, string description, CharacterData dto)
+    public MareCharaFileData() { }
+    public MareCharaFileData(FileCacheManager manager, string description, CharacterData dto)
     {
         Description = description;
 
@@ -59,9 +59,9 @@ public record ARPCharaFileData
         return Encoding.UTF8.GetBytes(JsonSerializer.Serialize(this));
     }
 
-    public static ARPCharaFileData FromByteArray(byte[] data)
+    public static MareCharaFileData FromByteArray(byte[] data)
     {
-        return JsonSerializer.Deserialize<ARPCharaFileData>(Encoding.UTF8.GetString(data))!;
+        return JsonSerializer.Deserialize<MareCharaFileData>(Encoding.UTF8.GetString(data))!;
     }
 
     public record FileSwap(IEnumerable<string> GamePaths, string FileSwapPath);

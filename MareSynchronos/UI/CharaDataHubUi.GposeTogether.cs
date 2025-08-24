@@ -3,9 +3,9 @@ using Dalamud.Interface;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
-using ARPSynchronos.Services.CharaData.Models;
+using MareSynchronos.Services.CharaData.Models;
 
-namespace ARPSynchronos.UI;
+namespace MareSynchronos.UI;
 
 internal sealed partial class CharaDataHubUi
 {

@@ -1,31 +1,31 @@
 ﻿using Dalamud.Game.ClientState.Objects.Types;
-using ARPSynchronos.PlayerData.Handlers;
-using ARPSynchronos.Services;
-using ARPSynchronos.Services.Mediator;
-using ARPSynchronos.Utils;
+using MareSynchronos.PlayerData.Handlers;
+using MareSynchronos.Services;
+using MareSynchronos.Services.Mediator;
+using MareSynchronos.Utils;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 
-namespace ARPSynchronos.Interop.Ipc;
+namespace MareSynchronos.Interop.Ipc;
 
 public class RedrawManager
 {
-    private readonly ARPMediator _ARPMediator;
+    private readonly MareMediator _mareMediator;
     private readonly DalamudUtilService _dalamudUtil;
     private readonly ConcurrentDictionary<nint, bool> _penumbraRedrawRequests = [];
     private CancellationTokenSource _disposalCts = new();
 
     public SemaphoreSlim RedrawSemaphore { get; init; } = new(2, 2);
 
-    public RedrawManager(ARPMediator ARPMediator, DalamudUtilService dalamudUtil)
+    public RedrawManager(MareMediator mareMediator, DalamudUtilService dalamudUtil)
     {
-        _ARPMediator = ARPMediator;
+        _mareMediator = mareMediator;
         _dalamudUtil = dalamudUtil;
     }
 
     public async Task PenumbraRedrawInternalAsync(ILogger logger, GameObjectHandler handler, Guid applicationId, Action<ICharacter> action, CancellationToken token)
     {
-        _ARPMediator.Publish(new PenumbraStartRedrawMessage(handler.Address));
+        _mareMediator.Publish(new PenumbraStartRedrawMessage(handler.Address));
 
         _penumbraRedrawRequests[handler.Address] = true;
 
@@ -43,7 +43,7 @@ public class RedrawManager
         finally
         {
             _penumbraRedrawRequests[handler.Address] = false;
-            _ARPMediator.Publish(new PenumbraEndRedrawMessage(handler.Address));
+            _mareMediator.Publish(new PenumbraEndRedrawMessage(handler.Address));
         }
     }
 

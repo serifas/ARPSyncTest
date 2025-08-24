@@ -3,7 +3,7 @@ using Lumina.Extensions;
 using System.Text;
 using static Lumina.Data.Parsing.MdlStructs;
 
-namespace ARPSynchronos.Interop.GameModel;
+namespace MareSynchronos.Interop.GameModel;
 
 #pragma warning disable S1104 // Fields should not have public accessibility
 

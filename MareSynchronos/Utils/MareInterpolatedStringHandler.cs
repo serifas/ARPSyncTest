@@ -1,14 +1,14 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace ARPSynchronos.Utils;
+namespace MareSynchronos.Utils;
 
 [InterpolatedStringHandler]
-public readonly ref struct ARPInterpolatedStringHandler
+public readonly ref struct MareInterpolatedStringHandler
 {
     readonly StringBuilder _logMessageStringbuilder;
 
-    public ARPInterpolatedStringHandler(int literalLength, int formattedCount)
+    public MareInterpolatedStringHandler(int literalLength, int formattedCount)
     {
         _logMessageStringbuilder = new StringBuilder(literalLength);
     }

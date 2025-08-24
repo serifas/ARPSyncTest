@@ -1,54 +1,54 @@
-﻿using ARPSynchronos.API.Dto.Group;
-using ARPSynchronos.PlayerData.Pairs;
-using ARPSynchronos.Services.Mediator;
-using ARPSynchronos.Services.ServerConfiguration;
-using ARPSynchronos.UI;
-using ARPSynchronos.UI.Components.Popup;
-using ARPSynchronos.WebAPI;
+﻿using MareSynchronos.API.Dto.Group;
+using MareSynchronos.PlayerData.Pairs;
+using MareSynchronos.Services.Mediator;
+using MareSynchronos.Services.ServerConfiguration;
+using MareSynchronos.UI;
+using MareSynchronos.UI.Components.Popup;
+using MareSynchronos.WebAPI;
 using Microsoft.Extensions.Logging;
 
-namespace ARPSynchronos.Services;
+namespace MareSynchronos.Services;
 
 public class UiFactory
 {
     private readonly ILoggerFactory _loggerFactory;
-    private readonly ARPMediator _ARPMediator;
+    private readonly MareMediator _mareMediator;
     private readonly ApiController _apiController;
     private readonly UiSharedService _uiSharedService;
     private readonly PairManager _pairManager;
     private readonly ServerConfigurationManager _serverConfigManager;
-    private readonly ARPProfileManager _ARPProfileManager;
+    private readonly MareProfileManager _mareProfileManager;
     private readonly PerformanceCollectorService _performanceCollectorService;
 
-    public UiFactory(ILoggerFactory loggerFactory, ARPMediator ARPMediator, ApiController apiController,
+    public UiFactory(ILoggerFactory loggerFactory, MareMediator mareMediator, ApiController apiController,
         UiSharedService uiSharedService, PairManager pairManager, ServerConfigurationManager serverConfigManager,
-        ARPProfileManager ARPProfileManager, PerformanceCollectorService performanceCollectorService)
+        MareProfileManager mareProfileManager, PerformanceCollectorService performanceCollectorService)
     {
         _loggerFactory = loggerFactory;
-        _ARPMediator = ARPMediator;
+        _mareMediator = mareMediator;
         _apiController = apiController;
         _uiSharedService = uiSharedService;
         _pairManager = pairManager;
         _serverConfigManager = serverConfigManager;
-        _ARPProfileManager = ARPProfileManager;
+        _mareProfileManager = mareProfileManager;
         _performanceCollectorService = performanceCollectorService;
     }
 
     public SyncshellAdminUI CreateSyncshellAdminUi(GroupFullInfoDto dto)
     {
-        return new SyncshellAdminUI(_loggerFactory.CreateLogger<SyncshellAdminUI>(), _ARPMediator,
+        return new SyncshellAdminUI(_loggerFactory.CreateLogger<SyncshellAdminUI>(), _mareMediator,
             _apiController, _uiSharedService, _pairManager, dto, _performanceCollectorService);
     }
 
     public StandaloneProfileUi CreateStandaloneProfileUi(Pair pair)
     {
-        return new StandaloneProfileUi(_loggerFactory.CreateLogger<StandaloneProfileUi>(), _ARPMediator,
-            _uiSharedService, _serverConfigManager, _ARPProfileManager, _pairManager, pair, _performanceCollectorService);
+        return new StandaloneProfileUi(_loggerFactory.CreateLogger<StandaloneProfileUi>(), _mareMediator,
+            _uiSharedService, _serverConfigManager, _mareProfileManager, _pairManager, pair, _performanceCollectorService);
     }
 
     public PermissionWindowUI CreatePermissionPopupUi(Pair pair)
     {
         return new PermissionWindowUI(_loggerFactory.CreateLogger<PermissionWindowUI>(), pair,
-            _ARPMediator, _uiSharedService, _apiController, _performanceCollectorService);
+            _mareMediator, _uiSharedService, _apiController, _performanceCollectorService);
     }
 }

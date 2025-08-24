@@ -1,16 +1,16 @@
 ﻿using Dalamud.Game.ClientState.Objects.Types;
-using ARPSynchronos.API.Data;
-using ARPSynchronos.API.Dto;
-using ARPSynchronos.API.Dto.CharaData;
-using ARPSynchronos.API.Dto.Group;
-using ARPSynchronos.ARPConfiguration.Models;
-using ARPSynchronos.PlayerData.Handlers;
-using ARPSynchronos.PlayerData.Pairs;
-using ARPSynchronos.Services.Events;
-using ARPSynchronos.WebAPI.Files.Models;
+using MareSynchronos.API.Data;
+using MareSynchronos.API.Dto;
+using MareSynchronos.API.Dto.CharaData;
+using MareSynchronos.API.Dto.Group;
+using MareSynchronos.MareConfiguration.Models;
+using MareSynchronos.PlayerData.Handlers;
+using MareSynchronos.PlayerData.Pairs;
+using MareSynchronos.Services.Events;
+using MareSynchronos.WebAPI.Files.Models;
 using System.Numerics;
 
-namespace ARPSynchronos.Services.Mediator;
+namespace MareSynchronos.Services.Mediator;
 
 #pragma warning disable MA0048 // File name must match type name
 #pragma warning disable S2094

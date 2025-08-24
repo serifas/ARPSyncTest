@@ -2,20 +2,20 @@
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Textures.TextureWraps;
 using Dalamud.Interface.Utility;
-using ARPSynchronos.API.Data.Extensions;
-using ARPSynchronos.ARPConfiguration;
-using ARPSynchronos.PlayerData.Pairs;
-using ARPSynchronos.Services;
-using ARPSynchronos.Services.Mediator;
-using ARPSynchronos.Services.ServerConfiguration;
+using MareSynchronos.API.Data.Extensions;
+using MareSynchronos.MareConfiguration;
+using MareSynchronos.PlayerData.Pairs;
+using MareSynchronos.Services;
+using MareSynchronos.Services.Mediator;
+using MareSynchronos.Services.ServerConfiguration;
 using Microsoft.Extensions.Logging;
 using System.Numerics;
 
-namespace ARPSynchronos.UI;
+namespace MareSynchronos.UI;
 
 public class PopoutProfileUi : WindowMediatorSubscriberBase
 {
-    private readonly ARPProfileManager _ARPProfileManager;
+    private readonly MareProfileManager _mareProfileManager;
     private readonly PairManager _pairManager;
     private readonly ServerConfigurationManager _serverManager;
     private readonly UiSharedService _uiSharedService;
@@ -27,13 +27,13 @@ public class PopoutProfileUi : WindowMediatorSubscriberBase
     private IDalamudTextureWrap? _supporterTextureWrap;
     private IDalamudTextureWrap? _textureWrap;
 
-    public PopoutProfileUi(ILogger<PopoutProfileUi> logger, ARPMediator mediator, UiSharedService uiBuilder,
-        ServerConfigurationManager serverManager, ARPConfigService ARPConfigService,
-        ARPProfileManager ARPProfileManager, PairManager pairManager, PerformanceCollectorService performanceCollectorService) : base(logger, mediator, "###ARPSynchronosPopoutProfileUI", performanceCollectorService)
+    public PopoutProfileUi(ILogger<PopoutProfileUi> logger, MareMediator mediator, UiSharedService uiBuilder,
+        ServerConfigurationManager serverManager, MareConfigService mareConfigService,
+        MareProfileManager mareProfileManager, PairManager pairManager, PerformanceCollectorService performanceCollectorService) : base(logger, mediator, "###MareSynchronosPopoutProfileUI", performanceCollectorService)
     {
         _uiSharedService = uiBuilder;
         _serverManager = serverManager;
-        _ARPProfileManager = ARPProfileManager;
+        _mareProfileManager = mareProfileManager;
         _pairManager = pairManager;
         Flags = ImGuiWindowFlags.NoDecoration;
 
@@ -59,7 +59,7 @@ public class PopoutProfileUi : WindowMediatorSubscriberBase
                 _lastMainSize = msg.Size;
             }
             var mainPos = msg.Position == Vector2.Zero ? _lastMainPos : msg.Position;
-            if (ARPConfigService.Current.ProfilePopoutRight)
+            if (mareConfigService.Current.ProfilePopoutRight)
             {
                 Position = new(mainPos.X + _lastMainSize.X * ImGuiHelpers.GlobalScale, mainPos.Y);
             }
@@ -85,22 +85,22 @@ public class PopoutProfileUi : WindowMediatorSubscriberBase
         {
             var spacing = ImGui.GetStyle().ItemSpacing;
 
-            var ARPProfile = _ARPProfileManager.GetARPProfile(_pair.UserData);
+            var mareProfile = _mareProfileManager.GetMareProfile(_pair.UserData);
 
-            if (_textureWrap == null || !ARPProfile.ImageData.Value.SequenceEqual(_lastProfilePicture))
+            if (_textureWrap == null || !mareProfile.ImageData.Value.SequenceEqual(_lastProfilePicture))
             {
                 _textureWrap?.Dispose();
-                _lastProfilePicture = ARPProfile.ImageData.Value;
+                _lastProfilePicture = mareProfile.ImageData.Value;
                 _textureWrap = _uiSharedService.LoadImage(_lastProfilePicture);
             }
 
-            if (_supporterTextureWrap == null || !ARPProfile.SupporterImageData.Value.SequenceEqual(_lastSupporterPicture))
+            if (_supporterTextureWrap == null || !mareProfile.SupporterImageData.Value.SequenceEqual(_lastSupporterPicture))
             {
                 _supporterTextureWrap?.Dispose();
                 _supporterTextureWrap = null;
-                if (!string.IsNullOrEmpty(ARPProfile.Base64SupporterPicture))
+                if (!string.IsNullOrEmpty(mareProfile.Base64SupporterPicture))
                 {
-                    _lastSupporterPicture = ARPProfile.SupporterImageData.Value;
+                    _lastSupporterPicture = mareProfile.SupporterImageData.Value;
                     _supporterTextureWrap = _uiSharedService.LoadImage(_lastSupporterPicture);
                 }
             }
@@ -158,7 +158,7 @@ public class PopoutProfileUi : WindowMediatorSubscriberBase
             ImGui.Separator();
             var font = _uiSharedService.GameFont.Push();
             var remaining = ImGui.GetWindowContentRegionMax().Y - ImGui.GetCursorPosY();
-            var descText = ARPProfile.Description;
+            var descText = mareProfile.Description;
             var textSize = ImGui.CalcTextSize(descText, wrapWidth: 256f * ImGuiHelpers.GlobalScale);
             bool trimmed = textSize.Y > remaining;
             while (textSize.Y > remaining && descText.Contains(' '))
@@ -166,7 +166,7 @@ public class PopoutProfileUi : WindowMediatorSubscriberBase
                 descText = descText[..descText.LastIndexOf(' ')].TrimEnd();
                 textSize = ImGui.CalcTextSize(descText + $"...{Environment.NewLine}[Open Full Profile for complete description]", wrapWidth: 256f * ImGuiHelpers.GlobalScale);
             }
-            UiSharedService.TextWrapped(trimmed ? descText + $"...{Environment.NewLine}[Open Full Profile for complete description]" : ARPProfile.Description);
+            UiSharedService.TextWrapped(trimmed ? descText + $"...{Environment.NewLine}[Open Full Profile for complete description]" : mareProfile.Description);
             font.Dispose();
 
             var padding = ImGui.GetStyle().WindowPadding.X / 2;

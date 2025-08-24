@@ -1,24 +1,24 @@
 ﻿using Dalamud.Plugin.Services;
-using ARPSynchronos.API.Data;
-using ARPSynchronos.API.Data.Comparer;
-using ARPSynchronos.API.Data.Extensions;
-using ARPSynchronos.API.Dto.Group;
-using ARPSynchronos.API.Dto.User;
-using ARPSynchronos.ARPConfiguration;
-using ARPSynchronos.ARPConfiguration.Models;
-using ARPSynchronos.PlayerData.Factories;
-using ARPSynchronos.Services.Events;
-using ARPSynchronos.Services.Mediator;
+using MareSynchronos.API.Data;
+using MareSynchronos.API.Data.Comparer;
+using MareSynchronos.API.Data.Extensions;
+using MareSynchronos.API.Dto.Group;
+using MareSynchronos.API.Dto.User;
+using MareSynchronos.MareConfiguration;
+using MareSynchronos.MareConfiguration.Models;
+using MareSynchronos.PlayerData.Factories;
+using MareSynchronos.Services.Events;
+using MareSynchronos.Services.Mediator;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 
-namespace ARPSynchronos.PlayerData.Pairs;
+namespace MareSynchronos.PlayerData.Pairs;
 
 public sealed class PairManager : DisposableMediatorSubscriberBase
 {
     private readonly ConcurrentDictionary<UserData, Pair> _allClientPairs = new(UserDataComparer.Instance);
     private readonly ConcurrentDictionary<GroupData, GroupFullInfoDto> _allGroups = new(GroupDataComparer.Instance);
-    private readonly ARPConfigService _configurationService;
+    private readonly MareConfigService _configurationService;
     private readonly IContextMenu _dalamudContextMenu;
     private readonly PairFactory _pairFactory;
     private Lazy<List<Pair>> _directPairsInternal;
@@ -26,7 +26,7 @@ public sealed class PairManager : DisposableMediatorSubscriberBase
     private Lazy<Dictionary<Pair, List<GroupFullInfoDto>>> _pairsWithGroupsInternal;
 
     public PairManager(ILogger<PairManager> logger, PairFactory pairFactory,
-                ARPConfigService configurationService, ARPMediator mediator,
+                MareConfigService configurationService, MareMediator mediator,
                 IContextMenu dalamudContextMenu) : base(logger, mediator)
     {
         _pairFactory = pairFactory;

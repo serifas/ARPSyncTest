@@ -2,19 +2,19 @@
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Textures.TextureWraps;
 using Dalamud.Interface.Utility;
-using ARPSynchronos.API.Data.Extensions;
-using ARPSynchronos.PlayerData.Pairs;
-using ARPSynchronos.Services;
-using ARPSynchronos.Services.Mediator;
-using ARPSynchronos.Services.ServerConfiguration;
+using MareSynchronos.API.Data.Extensions;
+using MareSynchronos.PlayerData.Pairs;
+using MareSynchronos.Services;
+using MareSynchronos.Services.Mediator;
+using MareSynchronos.Services.ServerConfiguration;
 using Microsoft.Extensions.Logging;
 using System.Numerics;
 
-namespace ARPSynchronos.UI;
+namespace MareSynchronos.UI;
 
 public class StandaloneProfileUi : WindowMediatorSubscriberBase
 {
-    private readonly ARPProfileManager _ARPProfileManager;
+    private readonly MareProfileManager _mareProfileManager;
     private readonly PairManager _pairManager;
     private readonly ServerConfigurationManager _serverManager;
     private readonly UiSharedService _uiSharedService;
@@ -24,14 +24,14 @@ public class StandaloneProfileUi : WindowMediatorSubscriberBase
     private IDalamudTextureWrap? _supporterTextureWrap;
     private IDalamudTextureWrap? _textureWrap;
 
-    public StandaloneProfileUi(ILogger<StandaloneProfileUi> logger, ARPMediator mediator, UiSharedService uiBuilder,
-        ServerConfigurationManager serverManager, ARPProfileManager ARPProfileManager, PairManager pairManager, Pair pair,
+    public StandaloneProfileUi(ILogger<StandaloneProfileUi> logger, MareMediator mediator, UiSharedService uiBuilder,
+        ServerConfigurationManager serverManager, MareProfileManager mareProfileManager, PairManager pairManager, Pair pair,
         PerformanceCollectorService performanceCollector)
-        : base(logger, mediator, "ARP Profile of " + pair.UserData.AliasOrUID + "##ARPSynchronosStandaloneProfileUI" + pair.UserData.AliasOrUID, performanceCollector)
+        : base(logger, mediator, "ARPSync Profile of " + pair.UserData.AliasOrUID + "##MareSynchronosStandaloneProfileUI" + pair.UserData.AliasOrUID, performanceCollector)
     {
         _uiSharedService = uiBuilder;
         _serverManager = serverManager;
-        _ARPProfileManager = ARPProfileManager;
+        _mareProfileManager = mareProfileManager;
         Pair = pair;
         _pairManager = pairManager;
         Flags = ImGuiWindowFlags.NoResize | ImGuiWindowFlags.AlwaysAutoResize;
@@ -51,22 +51,22 @@ public class StandaloneProfileUi : WindowMediatorSubscriberBase
         {
             var spacing = ImGui.GetStyle().ItemSpacing;
 
-            var ARPProfile = _ARPProfileManager.GetARPProfile(Pair.UserData);
+            var mareProfile = _mareProfileManager.GetMareProfile(Pair.UserData);
 
-            if (_textureWrap == null || !ARPProfile.ImageData.Value.SequenceEqual(_lastProfilePicture))
+            if (_textureWrap == null || !mareProfile.ImageData.Value.SequenceEqual(_lastProfilePicture))
             {
                 _textureWrap?.Dispose();
-                _lastProfilePicture = ARPProfile.ImageData.Value;
+                _lastProfilePicture = mareProfile.ImageData.Value;
                 _textureWrap = _uiSharedService.LoadImage(_lastProfilePicture);
             }
 
-            if (_supporterTextureWrap == null || !ARPProfile.SupporterImageData.Value.SequenceEqual(_lastSupporterPicture))
+            if (_supporterTextureWrap == null || !mareProfile.SupporterImageData.Value.SequenceEqual(_lastSupporterPicture))
             {
                 _supporterTextureWrap?.Dispose();
                 _supporterTextureWrap = null;
-                if (!string.IsNullOrEmpty(ARPProfile.Base64SupporterPicture))
+                if (!string.IsNullOrEmpty(mareProfile.Base64SupporterPicture))
                 {
-                    _lastSupporterPicture = ARPProfile.SupporterImageData.Value;
+                    _lastSupporterPicture = mareProfile.SupporterImageData.Value;
                     _supporterTextureWrap = _uiSharedService.LoadImage(_lastSupporterPicture);
                 }
             }
@@ -86,7 +86,7 @@ public class StandaloneProfileUi : WindowMediatorSubscriberBase
             ImGuiHelpers.ScaledDummy(new Vector2(256, 256 + spacing.Y));
             var postDummy = ImGui.GetCursorPosY();
             ImGui.SameLine();
-            var descriptionTextSize = ImGui.CalcTextSize(ARPProfile.Description, wrapWidth: 256f);
+            var descriptionTextSize = ImGui.CalcTextSize(mareProfile.Description, wrapWidth: 256f);
             var descriptionChildHeight = rectMax.Y - pos.Y - rectMin.Y - spacing.Y * 2;
             if (descriptionTextSize.Y > descriptionChildHeight && !_adjustedForScrollBars)
             {
@@ -107,7 +107,7 @@ public class StandaloneProfileUi : WindowMediatorSubscriberBase
             if (ImGui.BeginChildFrame(1000, childFrame))
             {
                 using var _ = _uiSharedService.GameFont.Push();
-                ImGui.TextWrapped(ARPProfile.Description);
+                ImGui.TextWrapped(mareProfile.Description);
             }
             ImGui.EndChildFrame();
 

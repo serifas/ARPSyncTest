@@ -1,15 +1,15 @@
 ﻿using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.Utility;
-using ARPSynchronos.API.Data.Extensions;
-using ARPSynchronos.API.Dto.Group;
-using ARPSynchronos.Services;
-using ARPSynchronos.Services.Mediator;
-using ARPSynchronos.WebAPI;
+using MareSynchronos.API.Data.Extensions;
+using MareSynchronos.API.Dto.Group;
+using MareSynchronos.Services;
+using MareSynchronos.Services.Mediator;
+using MareSynchronos.WebAPI;
 using Microsoft.Extensions.Logging;
 using System.Numerics;
 
-namespace ARPSynchronos.UI;
+namespace MareSynchronos.UI;
 
 public class CreateSyncshellUI : WindowMediatorSubscriberBase
 {
@@ -18,9 +18,9 @@ public class CreateSyncshellUI : WindowMediatorSubscriberBase
     private bool _errorGroupCreate;
     private GroupJoinDto? _lastCreatedGroup;
 
-    public CreateSyncshellUI(ILogger<CreateSyncshellUI> logger, ARPMediator ARPMediator, ApiController apiController, UiSharedService uiSharedService,
+    public CreateSyncshellUI(ILogger<CreateSyncshellUI> logger, MareMediator mareMediator, ApiController apiController, UiSharedService uiSharedService,
         PerformanceCollectorService performanceCollectorService)
-        : base(logger, ARPMediator, "Create new Syncshell###ARPSynchronosCreateSyncshell", performanceCollectorService)
+        : base(logger, mareMediator, "Create new Syncshell###MareSynchronosCreateSyncshell", performanceCollectorService)
     {
         _apiController = apiController;
         _uiSharedService = uiSharedService;
@@ -76,7 +76,7 @@ public class CreateSyncshellUI : WindowMediatorSubscriberBase
             ImGui.AlignTextToFramePadding();
             ImGui.TextUnformatted("- VFX");
             _uiSharedService.BooleanToColoredIcon(!_apiController.DefaultPermissions!.DisableGroupVFX);
-            UiSharedService.TextWrapped("(Those preferred permissions can be changed anytime after Syncshell creation, your defaults can be changed anytime in the ARP Settings)");
+            UiSharedService.TextWrapped("(Those preferred permissions can be changed anytime after Syncshell creation, your defaults can be changed anytime in the ARPSync Settings)");
         }
         else
         {

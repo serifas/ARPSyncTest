@@ -3,17 +3,17 @@ using Dalamud.Interface;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
-using ARPSynchronos.API.Data.Enum;
-using ARPSynchronos.API.Data.Extensions;
-using ARPSynchronos.API.Dto.Group;
-using ARPSynchronos.PlayerData.Pairs;
-using ARPSynchronos.Services;
-using ARPSynchronos.Services.Mediator;
-using ARPSynchronos.WebAPI;
+using MareSynchronos.API.Data.Enum;
+using MareSynchronos.API.Data.Extensions;
+using MareSynchronos.API.Dto.Group;
+using MareSynchronos.PlayerData.Pairs;
+using MareSynchronos.Services;
+using MareSynchronos.Services.Mediator;
+using MareSynchronos.WebAPI;
 using Microsoft.Extensions.Logging;
 using System.Globalization;
 
-namespace ARPSynchronos.UI.Components.Popup;
+namespace MareSynchronos.UI.Components.Popup;
 
 public class SyncshellAdminUI : WindowMediatorSubscriberBase
 {
@@ -31,7 +31,7 @@ public class SyncshellAdminUI : WindowMediatorSubscriberBase
     private Task<int>? _pruneTask;
     private int _pruneDays = 14;
 
-    public SyncshellAdminUI(ILogger<SyncshellAdminUI> logger, ARPMediator mediator, ApiController apiController,
+    public SyncshellAdminUI(ILogger<SyncshellAdminUI> logger, MareMediator mediator, ApiController apiController,
         UiSharedService uiSharedService, PairManager pairManager, GroupFullInfoDto groupFullInfo, PerformanceCollectorService performanceCollectorService)
         : base(logger, mediator, "Syncshell Admin Panel (" + groupFullInfo.GroupAliasOrGID + ")", performanceCollectorService)
     {
@@ -259,7 +259,7 @@ public class SyncshellAdminUI : WindowMediatorSubscriberBase
                         _pruneTestTask = _apiController.GroupPrune(new(GroupFullInfo.Group), _pruneDays, execute: false);
                         _pruneTask = null;
                     }
-                    UiSharedService.AttachToolTip($"This will start the prune process for this Syncshell of inactive ARP users that have not logged in in the past {_pruneDays} days."
+                    UiSharedService.AttachToolTip($"This will start the prune process for this Syncshell of inactive ARPSync users that have not logged in in the past {_pruneDays} days."
                         + Environment.NewLine + "You will be able to review the amount of inactive users before executing the prune."
                         + UiSharedService.TooltipSeparator + "Note: this check excludes pinned users and moderators of this Syncshell.");
                     ImGui.SameLine();
@@ -285,7 +285,7 @@ public class SyncshellAdminUI : WindowMediatorSubscriberBase
                         else
                         {
                             ImGui.AlignTextToFramePadding();
-                            UiSharedService.TextWrapped($"Found {_pruneTestTask.Result} user(s) that have not logged into ARP in the past {_pruneDays} days.");
+                            UiSharedService.TextWrapped($"Found {_pruneTestTask.Result} user(s) that have not logged into ARPSync in the past {_pruneDays} days.");
                             if (_pruneTestTask.Result > 0)
                             {
                                 using (ImRaii.Disabled(!UiSharedService.CtrlPressed()))

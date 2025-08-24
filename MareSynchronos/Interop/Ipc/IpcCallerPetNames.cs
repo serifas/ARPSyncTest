@@ -1,17 +1,17 @@
 ﻿using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Ipc;
-using ARPSynchronos.Services;
-using ARPSynchronos.Services.Mediator;
+using MareSynchronos.Services;
+using MareSynchronos.Services.Mediator;
 using Microsoft.Extensions.Logging;
 
-namespace ARPSynchronos.Interop.Ipc;
+namespace MareSynchronos.Interop.Ipc;
 
 public sealed class IpcCallerPetNames : IIpcCaller
 {
     private readonly ILogger<IpcCallerPetNames> _logger;
     private readonly DalamudUtilService _dalamudUtil;
-    private readonly ARPMediator _ARPMediator;
+    private readonly MareMediator _mareMediator;
 
     private readonly ICallGateSubscriber<object> _petnamesReady;
     private readonly ICallGateSubscriber<object> _petnamesDisposing;
@@ -24,11 +24,11 @@ public sealed class IpcCallerPetNames : IIpcCaller
     private readonly ICallGateSubscriber<ushort, object> _clearPlayerData;
 
     public IpcCallerPetNames(ILogger<IpcCallerPetNames> logger, IDalamudPluginInterface pi, DalamudUtilService dalamudUtil,
-        ARPMediator ARPMediator)
+        MareMediator mareMediator)
     {
         _logger = logger;
         _dalamudUtil = dalamudUtil;
-        _ARPMediator = ARPMediator;
+        _mareMediator = mareMediator;
 
         _petnamesReady = pi.GetIpcSubscriber<object>("PetRenamer.Ready");
         _petnamesDisposing = pi.GetIpcSubscriber<object>("PetRenamer.Disposing");
@@ -68,12 +68,12 @@ public sealed class IpcCallerPetNames : IIpcCaller
     private void OnPetNicknamesReady()
     {
         CheckAPI();
-        _ARPMediator.Publish(new PetNamesReadyMessage());
+        _mareMediator.Publish(new PetNamesReadyMessage());
     }
 
     private void OnPetNicknamesDispose()
     {
-        _ARPMediator.Publish(new PetNamesMessage(string.Empty));
+        _mareMediator.Publish(new PetNamesMessage(string.Empty));
     }
 
     public string GetLocalNames()
@@ -146,7 +146,7 @@ public sealed class IpcCallerPetNames : IIpcCaller
 
     private void OnLocalPetNicknamesDataChange(string data)
     {
-        _ARPMediator.Publish(new PetNamesMessage(data));
+        _mareMediator.Publish(new PetNamesMessage(data));
     }
 
     public void Dispose()

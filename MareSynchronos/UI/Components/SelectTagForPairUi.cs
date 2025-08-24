@@ -3,12 +3,12 @@ using Dalamud.Interface;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Utility;
-using ARPSynchronos.PlayerData.Pairs;
-using ARPSynchronos.UI.Handlers;
+using MareSynchronos.PlayerData.Pairs;
+using MareSynchronos.UI.Handlers;
 
 using System.Numerics;
 
-namespace ARPSynchronos.UI.Components;
+namespace MareSynchronos.UI.Components;
 
 public class SelectTagForPairUi
 {

@@ -1,30 +1,30 @@
 ﻿using Dalamud.Game.Gui.ContextMenu;
 using Dalamud.Game.Text.SeStringHandling;
-using ARPSynchronos.API.Data;
-using ARPSynchronos.API.Data.Enum;
-using ARPSynchronos.API.Data.Extensions;
-using ARPSynchronos.API.Dto.User;
-using ARPSynchronos.PlayerData.Factories;
-using ARPSynchronos.PlayerData.Handlers;
-using ARPSynchronos.Services.Mediator;
-using ARPSynchronos.Services.ServerConfiguration;
-using ARPSynchronos.Utils;
+using MareSynchronos.API.Data;
+using MareSynchronos.API.Data.Enum;
+using MareSynchronos.API.Data.Extensions;
+using MareSynchronos.API.Dto.User;
+using MareSynchronos.PlayerData.Factories;
+using MareSynchronos.PlayerData.Handlers;
+using MareSynchronos.Services.Mediator;
+using MareSynchronos.Services.ServerConfiguration;
+using MareSynchronos.Utils;
 using Microsoft.Extensions.Logging;
 
-namespace ARPSynchronos.PlayerData.Pairs;
+namespace MareSynchronos.PlayerData.Pairs;
 
 public class Pair
 {
     private readonly PairHandlerFactory _cachedPlayerFactory;
     private readonly SemaphoreSlim _creationSemaphore = new(1);
     private readonly ILogger<Pair> _logger;
-    private readonly ARPMediator _mediator;
+    private readonly MareMediator _mediator;
     private readonly ServerConfigurationManager _serverConfigurationManager;
     private CancellationTokenSource _applicationCts = new();
     private OnlineUserIdentDto? _onlineUserIdentDto = null;
 
     public Pair(ILogger<Pair> logger, UserFullPairDto userPair, PairHandlerFactory cachedPlayerFactory,
-        ARPMediator mediator, ServerConfigurationManager serverConfigurationManager)
+        MareMediator mediator, ServerConfigurationManager serverConfigurationManager)
     {
         _logger = logger;
         UserPair = userPair;

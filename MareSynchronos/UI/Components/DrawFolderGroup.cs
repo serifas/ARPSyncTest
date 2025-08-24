@@ -3,32 +3,32 @@ using Dalamud.Interface;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
-using ARPSynchronos.API.Data.Extensions;
-using ARPSynchronos.API.Dto.Group;
-using ARPSynchronos.PlayerData.Pairs;
-using ARPSynchronos.Services.Mediator;
-using ARPSynchronos.UI.Handlers;
-using ARPSynchronos.WebAPI;
+using MareSynchronos.API.Data.Extensions;
+using MareSynchronos.API.Dto.Group;
+using MareSynchronos.PlayerData.Pairs;
+using MareSynchronos.Services.Mediator;
+using MareSynchronos.UI.Handlers;
+using MareSynchronos.WebAPI;
 using System.Collections.Immutable;
 
-namespace ARPSynchronos.UI.Components;
+namespace MareSynchronos.UI.Components;
 
 public class DrawFolderGroup : DrawFolderBase
 {
     private readonly ApiController _apiController;
     private readonly GroupFullInfoDto _groupFullInfoDto;
     private readonly IdDisplayHandler _idDisplayHandler;
-    private readonly ARPMediator _ARPMediator;
+    private readonly MareMediator _mareMediator;
 
     public DrawFolderGroup(string id, GroupFullInfoDto groupFullInfoDto, ApiController apiController,
         IImmutableList<DrawUserPair> drawPairs, IImmutableList<Pair> allPairs, TagHandler tagHandler, IdDisplayHandler idDisplayHandler,
-        ARPMediator ARPMediator, UiSharedService uiSharedService) :
+        MareMediator mareMediator, UiSharedService uiSharedService) :
         base(id, drawPairs, allPairs, tagHandler, uiSharedService)
     {
         _groupFullInfoDto = groupFullInfoDto;
         _apiController = apiController;
         _idDisplayHandler = idDisplayHandler;
-        _ARPMediator = ARPMediator;
+        _mareMediator = mareMediator;
     }
 
     protected override bool RenderIfEmpty => true;
@@ -154,7 +154,7 @@ public class DrawFolderGroup : DrawFolderBase
             if (_uiSharedService.IconTextButton(FontAwesomeIcon.Cog, "Open Admin Panel", menuWidth, true))
             {
                 ImGui.CloseCurrentPopup();
-                _ARPMediator.Publish(new OpenSyncshellAdminPanel(_groupFullInfoDto));
+                _mareMediator.Publish(new OpenSyncshellAdminPanel(_groupFullInfoDto));
             }
         }
     }

@@ -1,7 +1,7 @@
-﻿using ARPSynchronos.API.Data;
+﻿using MareSynchronos.API.Data;
 using MessagePack;
 
-namespace ARPSynchronos.API.Dto.Group;
+namespace MareSynchronos.API.Dto.Group;
 
 [MessagePackObject(keyAsPropertyName: true)]
 public record BannedGroupUserDto : GroupPairDto

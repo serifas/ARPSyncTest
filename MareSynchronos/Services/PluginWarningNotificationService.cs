@@ -1,23 +1,23 @@
-﻿using ARPSynchronos.API.Data;
-using ARPSynchronos.API.Data.Comparer;
-using ARPSynchronos.Interop.Ipc;
-using ARPSynchronos.ARPConfiguration;
-using ARPSynchronos.ARPConfiguration.Models;
-using ARPSynchronos.Services.Mediator;
+﻿using MareSynchronos.API.Data;
+using MareSynchronos.API.Data.Comparer;
+using MareSynchronos.Interop.Ipc;
+using MareSynchronos.MareConfiguration;
+using MareSynchronos.MareConfiguration.Models;
+using MareSynchronos.Services.Mediator;
 using System.Collections.Concurrent;
 
-namespace ARPSynchronos.PlayerData.Pairs;
+namespace MareSynchronos.PlayerData.Pairs;
 
 public class PluginWarningNotificationService
 {
     private readonly ConcurrentDictionary<UserData, OptionalPluginWarning> _cachedOptionalPluginWarnings = new(UserDataComparer.Instance);
     private readonly IpcManager _ipcManager;
-    private readonly ARPConfigService _ARPConfigService;
-    private readonly ARPMediator _mediator;
+    private readonly MareConfigService _mareConfigService;
+    private readonly MareMediator _mediator;
 
-    public PluginWarningNotificationService(ARPConfigService ARPConfigService, IpcManager ipcManager, ARPMediator mediator)
+    public PluginWarningNotificationService(MareConfigService mareConfigService, IpcManager ipcManager, MareMediator mediator)
     {
-        _ARPConfigService = ARPConfigService;
+        _mareConfigService = mareConfigService;
         _ipcManager = ipcManager;
         _mediator = mediator;
     }
@@ -28,11 +28,11 @@ public class PluginWarningNotificationService
         {
             _cachedOptionalPluginWarnings[user] = warning = new()
             {
-                ShownCustomizePlusWarning = _ARPConfigService.Current.DisableOptionalPluginWarnings,
-                ShownHeelsWarning = _ARPConfigService.Current.DisableOptionalPluginWarnings,
-                ShownHonorificWarning = _ARPConfigService.Current.DisableOptionalPluginWarnings,
-                ShownMoodlesWarning = _ARPConfigService.Current.DisableOptionalPluginWarnings,
-                ShowPetNicknamesWarning = _ARPConfigService.Current.DisableOptionalPluginWarnings
+                ShownCustomizePlusWarning = _mareConfigService.Current.DisableOptionalPluginWarnings,
+                ShownHeelsWarning = _mareConfigService.Current.DisableOptionalPluginWarnings,
+                ShownHonorificWarning = _mareConfigService.Current.DisableOptionalPluginWarnings,
+                ShownMoodlesWarning = _mareConfigService.Current.DisableOptionalPluginWarnings,
+                ShowPetNicknamesWarning = _mareConfigService.Current.DisableOptionalPluginWarnings
             };
         }
 

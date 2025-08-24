@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Authors></Authors>
     <Company></Company>
-    <Version>0.0.0.1</Version>
+    <Version>1.11.0</Version>
     <Description></Description>
     <Copyright></Copyright>
     <PackageProjectUrl>https://github.com/Penumbra-Sync/client</PackageProjectUrl>
@@ -55,6 +55,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MareAPI\MareSynchronosAPI\MareSynchronos.API.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="CheapLoc">
       <HintPath>$(DalamudLibPath)CheapLoc.dll</HintPath>
       <Private>false</Private>
@@ -71,10 +75,6 @@
 
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\MareAPI\MareSynchronosAPI\ARPSynchronos.API.csproj" />
   </ItemGroup>
 
 </Project>

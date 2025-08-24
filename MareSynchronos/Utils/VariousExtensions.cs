@@ -1,12 +1,12 @@
 ﻿using Dalamud.Game.ClientState.Objects.Types;
-using ARPSynchronos.API.Data;
-using ARPSynchronos.API.Data.Enum;
-using ARPSynchronos.PlayerData.Handlers;
-using ARPSynchronos.PlayerData.Pairs;
+using MareSynchronos.API.Data;
+using MareSynchronos.API.Data.Enum;
+using MareSynchronos.PlayerData.Handlers;
+using MareSynchronos.PlayerData.Pairs;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
-namespace ARPSynchronos.Utils;
+namespace MareSynchronos.Utils;
 
 public static class VariousExtensions
 {

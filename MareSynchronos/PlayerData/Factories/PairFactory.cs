@@ -1,35 +1,35 @@
-﻿using ARPSynchronos.API.Dto.User;
-using ARPSynchronos.PlayerData.Pairs;
-using ARPSynchronos.Services.Mediator;
-using ARPSynchronos.Services.ServerConfiguration;
+﻿using MareSynchronos.API.Dto.User;
+using MareSynchronos.PlayerData.Pairs;
+using MareSynchronos.Services.Mediator;
+using MareSynchronos.Services.ServerConfiguration;
 using Microsoft.Extensions.Logging;
 
-namespace ARPSynchronos.PlayerData.Factories;
+namespace MareSynchronos.PlayerData.Factories;
 
 public class PairFactory
 {
     private readonly PairHandlerFactory _cachedPlayerFactory;
     private readonly ILoggerFactory _loggerFactory;
-    private readonly ARPMediator _ARPMediator;
+    private readonly MareMediator _mareMediator;
     private readonly ServerConfigurationManager _serverConfigurationManager;
 
     public PairFactory(ILoggerFactory loggerFactory, PairHandlerFactory cachedPlayerFactory,
-        ARPMediator ARPMediator, ServerConfigurationManager serverConfigurationManager)
+        MareMediator mareMediator, ServerConfigurationManager serverConfigurationManager)
     {
         _loggerFactory = loggerFactory;
         _cachedPlayerFactory = cachedPlayerFactory;
-        _ARPMediator = ARPMediator;
+        _mareMediator = mareMediator;
         _serverConfigurationManager = serverConfigurationManager;
     }
 
     public Pair Create(UserFullPairDto userPairDto)
     {
-        return new Pair(_loggerFactory.CreateLogger<Pair>(), userPairDto, _cachedPlayerFactory, _ARPMediator, _serverConfigurationManager);
+        return new Pair(_loggerFactory.CreateLogger<Pair>(), userPairDto, _cachedPlayerFactory, _mareMediator, _serverConfigurationManager);
     }
 
     public Pair Create(UserPairDto userPairDto)
     {
         return new Pair(_loggerFactory.CreateLogger<Pair>(), new(userPairDto.User, userPairDto.IndividualPairStatus, [], userPairDto.OwnPermissions, userPairDto.OtherPermissions),
-            _cachedPlayerFactory, _ARPMediator, _serverConfigurationManager);
+            _cachedPlayerFactory, _mareMediator, _serverConfigurationManager);
     }
 }

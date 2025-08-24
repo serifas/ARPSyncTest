@@ -1,6 +1,6 @@
-﻿using ARPSynchronos.API.Data;
+﻿using MareSynchronos.API.Data;
 
-namespace ARPSynchronos.PlayerData.Data;
+namespace MareSynchronos.PlayerData.Data;
 
 public class FileReplacementDataComparer : IEqualityComparer<FileReplacementData>
 {

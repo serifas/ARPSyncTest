@@ -1,11 +1,11 @@
-﻿using ARPSynchronos.API.Data;
-using ARPSynchronos.API.Dto;
-using ARPSynchronos.API.Dto.User;
+﻿using MareSynchronos.API.Data;
+using MareSynchronos.API.Dto;
+using MareSynchronos.API.Dto.User;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Logging;
 using System.Text;
 
-namespace ARPSynchronos.WebAPI;
+namespace MareSynchronos.WebAPI;
 
 #pragma warning disable MA0040
 public partial class ApiController
@@ -31,37 +31,37 @@ public partial class ApiController
     public async Task UserAddPair(UserDto user)
     {
         if (!IsConnected) return;
-        await _ARPHub!.SendAsync(nameof(UserAddPair), user).ConfigureAwait(false);
+        await _mareHub!.SendAsync(nameof(UserAddPair), user).ConfigureAwait(false);
     }
 
     public async Task UserDelete()
     {
         CheckConnection();
-        await _ARPHub!.SendAsync(nameof(UserDelete)).ConfigureAwait(false);
+        await _mareHub!.SendAsync(nameof(UserDelete)).ConfigureAwait(false);
         await CreateConnectionsAsync().ConfigureAwait(false);
     }
 
     public async Task<List<OnlineUserIdentDto>> UserGetOnlinePairs(CensusDataDto? censusDataDto)
     {
-        return await _ARPHub!.InvokeAsync<List<OnlineUserIdentDto>>(nameof(UserGetOnlinePairs), censusDataDto).ConfigureAwait(false);
+        return await _mareHub!.InvokeAsync<List<OnlineUserIdentDto>>(nameof(UserGetOnlinePairs), censusDataDto).ConfigureAwait(false);
     }
 
     public async Task<List<UserFullPairDto>> UserGetPairedClients()
     {
-        return await _ARPHub!.InvokeAsync<List<UserFullPairDto>>(nameof(UserGetPairedClients)).ConfigureAwait(false);
+        return await _mareHub!.InvokeAsync<List<UserFullPairDto>>(nameof(UserGetPairedClients)).ConfigureAwait(false);
     }
 
     public async Task<UserProfileDto> UserGetProfile(UserDto dto)
     {
         if (!IsConnected) return new UserProfileDto(dto.User, Disabled: false, IsNSFW: null, ProfilePictureBase64: null, Description: null);
-        return await _ARPHub!.InvokeAsync<UserProfileDto>(nameof(UserGetProfile), dto).ConfigureAwait(false);
+        return await _mareHub!.InvokeAsync<UserProfileDto>(nameof(UserGetProfile), dto).ConfigureAwait(false);
     }
 
     public async Task UserPushData(UserCharaDataMessageDto dto)
     {
         try
         {
-            await _ARPHub!.InvokeAsync(nameof(UserPushData), dto).ConfigureAwait(false);
+            await _mareHub!.InvokeAsync(nameof(UserPushData), dto).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
@@ -75,7 +75,7 @@ public partial class ApiController
 
         try
         {
-            await _ARPHub!.InvokeAsync(nameof(SetBulkPermissions), dto).ConfigureAwait(false);
+            await _mareHub!.InvokeAsync(nameof(SetBulkPermissions), dto).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
@@ -86,7 +86,7 @@ public partial class ApiController
     public async Task UserRemovePair(UserDto userDto)
     {
         if (!IsConnected) return;
-        await _ARPHub!.SendAsync(nameof(UserRemovePair), userDto).ConfigureAwait(false);
+        await _mareHub!.SendAsync(nameof(UserRemovePair), userDto).ConfigureAwait(false);
     }
 
     public async Task UserSetPairPermissions(UserPermissionsDto userPermissions)
@@ -100,13 +100,13 @@ public partial class ApiController
     public async Task UserSetProfile(UserProfileDto userDescription)
     {
         if (!IsConnected) return;
-        await _ARPHub!.InvokeAsync(nameof(UserSetProfile), userDescription).ConfigureAwait(false);
+        await _mareHub!.InvokeAsync(nameof(UserSetProfile), userDescription).ConfigureAwait(false);
     }
 
     public async Task UserUpdateDefaultPermissions(DefaultPermissionsDto defaultPermissionsDto)
     {
         CheckConnection();
-        await _ARPHub!.InvokeAsync(nameof(UserUpdateDefaultPermissions), defaultPermissionsDto).ConfigureAwait(false);
+        await _mareHub!.InvokeAsync(nameof(UserUpdateDefaultPermissions), defaultPermissionsDto).ConfigureAwait(false);
     }
 
     private async Task PushCharacterDataInternal(CharacterData character, List<UserData> visibleCharacters)

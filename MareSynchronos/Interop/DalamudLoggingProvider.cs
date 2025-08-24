@@ -1,10 +1,10 @@
 ﻿using Dalamud.Plugin.Services;
-using ARPSynchronos.ARPConfiguration;
+using MareSynchronos.MareConfiguration;
 using Microsoft.Extensions.Logging;
 
 using System.Collections.Concurrent;
 
-namespace ARPSynchronos.Interop;
+namespace MareSynchronos.Interop;
 
 [ProviderAlias("Dalamud")]
 public sealed class DalamudLoggingProvider : ILoggerProvider
@@ -12,13 +12,13 @@ public sealed class DalamudLoggingProvider : ILoggerProvider
     private readonly ConcurrentDictionary<string, DalamudLogger> _loggers =
         new(StringComparer.OrdinalIgnoreCase);
 
-    private readonly ARPConfigService _ARPConfigService;
+    private readonly MareConfigService _mareConfigService;
     private readonly IPluginLog _pluginLog;
     private readonly bool _hasModifiedGameFiles;
 
-    public DalamudLoggingProvider(ARPConfigService ARPConfigService, IPluginLog pluginLog, bool hasModifiedGameFiles)
+    public DalamudLoggingProvider(MareConfigService mareConfigService, IPluginLog pluginLog, bool hasModifiedGameFiles)
     {
-        _ARPConfigService = ARPConfigService;
+        _mareConfigService = mareConfigService;
         _pluginLog = pluginLog;
         _hasModifiedGameFiles = hasModifiedGameFiles;
     }
@@ -35,7 +35,7 @@ public sealed class DalamudLoggingProvider : ILoggerProvider
             catName = string.Join("", Enumerable.Range(0, 15 - catName.Length).Select(_ => " ")) + catName;
         }
 
-        return _loggers.GetOrAdd(catName, name => new DalamudLogger(name, _ARPConfigService, _pluginLog, _hasModifiedGameFiles));
+        return _loggers.GetOrAdd(catName, name => new DalamudLogger(name, _mareConfigService, _pluginLog, _hasModifiedGameFiles));
     }
 
     public void Dispose()

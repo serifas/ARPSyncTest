@@ -1,23 +1,23 @@
 ﻿using K4os.Compression.LZ4.Legacy;
-using ARPSynchronos.Interop.Ipc;
-using ARPSynchronos.ARPConfiguration;
-using ARPSynchronos.Services.Mediator;
-using ARPSynchronos.Utils;
+using MareSynchronos.Interop.Ipc;
+using MareSynchronos.MareConfiguration;
+using MareSynchronos.Services.Mediator;
+using MareSynchronos.Utils;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 using System.Globalization;
 using System.Text;
 
-namespace ARPSynchronos.FileCache;
+namespace MareSynchronos.FileCache;
 
 public sealed class FileCacheManager : IHostedService
 {
     public const string CachePrefix = "{cache}";
     public const string CsvSplit = "|";
     public const string PenumbraPrefix = "{penumbra}";
-    private readonly ARPConfigService _configService;
-    private readonly ARPMediator _ARPMediator;
+    private readonly MareConfigService _configService;
+    private readonly MareMediator _mareMediator;
     private readonly string _csvPath;
     private readonly ConcurrentDictionary<string, List<FileCacheEntity>> _fileCaches = new(StringComparer.Ordinal);
     private readonly SemaphoreSlim _getCachesByPathsSemaphore = new(1, 1);
@@ -26,12 +26,12 @@ public sealed class FileCacheManager : IHostedService
     private readonly ILogger<FileCacheManager> _logger;
     public string CacheFolder => _configService.Current.CacheFolder;
 
-    public FileCacheManager(ILogger<FileCacheManager> logger, IpcManager ipcManager, ARPConfigService configService, ARPMediator ARPMediator)
+    public FileCacheManager(ILogger<FileCacheManager> logger, IpcManager ipcManager, MareConfigService configService, MareMediator mareMediator)
     {
         _logger = logger;
         _ipcManager = ipcManager;
         _configService = configService;
-        _ARPMediator = ARPMediator;
+        _mareMediator = mareMediator;
         _csvPath = Path.Combine(configService.ConfigurationDirectory, "FileCache.csv");
     }
 
@@ -82,7 +82,7 @@ public sealed class FileCacheManager : IHostedService
 
     public Task<List<FileCacheEntity>> ValidateLocalIntegrity(IProgress<(int, int, FileCacheEntity)> progress, CancellationToken cancellationToken)
     {
-        _ARPMediator.Publish(new HaltScanMessage(nameof(ValidateLocalIntegrity)));
+        _mareMediator.Publish(new HaltScanMessage(nameof(ValidateLocalIntegrity)));
         _logger.LogInformation("Validating local storage");
         var cacheEntries = _fileCaches.SelectMany(v => v.Value).Where(v => v.IsCacheEntry).ToList();
         List<FileCacheEntity> brokenEntities = [];
@@ -131,7 +131,7 @@ public sealed class FileCacheManager : IHostedService
             }
         }
 
-        _ARPMediator.Publish(new ResumeScanMessage(nameof(ValidateLocalIntegrity)));
+        _mareMediator.Publish(new ResumeScanMessage(nameof(ValidateLocalIntegrity)));
         return Task.FromResult(brokenEntities);
     }
 
@@ -417,9 +417,9 @@ public sealed class FileCacheManager : IHostedService
         {
             if (!_ipcManager.Penumbra.APIAvailable || string.IsNullOrEmpty(_ipcManager.Penumbra.ModDirectory))
             {
-                _ARPMediator.Publish(new NotificationMessage("Penumbra not connected",
+                _mareMediator.Publish(new NotificationMessage("Penumbra not connected",
                     "Could not load local file cache data. Penumbra is not connected or not properly set up. Please enable and/or configure Penumbra properly to use ARP. After, reload ARP in the Plugin installer.",
-                    ARPConfiguration.Models.NotificationType.Error));
+                    MareConfiguration.Models.NotificationType.Error));
             }
 
             _logger.LogInformation("{csvPath} found, parsing", _csvPath);

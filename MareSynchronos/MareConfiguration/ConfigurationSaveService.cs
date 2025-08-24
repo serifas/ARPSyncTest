@@ -1,10 +1,10 @@
-﻿using ARPSynchronos.ARPConfiguration.Configurations;
+﻿using MareSynchronos.MareConfiguration.Configurations;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 using System.Text.Json;
 
-namespace ARPSynchronos.ARPConfiguration;
+namespace MareSynchronos.MareConfiguration;
 
 public class ConfigurationSaveService : IHostedService
 {
@@ -15,7 +15,7 @@ public class ConfigurationSaveService : IHostedService
     public const string BackupFolder = "config_backup";
     private readonly MethodInfo _saveMethod;
 
-    public ConfigurationSaveService(ILogger<ConfigurationSaveService> logger, IEnumerable<IConfigService<IARPConfiguration>> configs)
+    public ConfigurationSaveService(ILogger<ConfigurationSaveService> logger, IEnumerable<IConfigService<IMareConfiguration>> configs)
     {
         foreach (var config in configs)
         {
@@ -68,7 +68,7 @@ public class ConfigurationSaveService : IHostedService
         }
     }
 
-    private async Task SaveConfig<T>(IConfigService<T> config) where T : IARPConfiguration
+    private async Task SaveConfig<T>(IConfigService<T> config) where T : IMareConfiguration
     {
         _logger.LogTrace("Saving {configName}", config.ConfigurationName);
         var configDir = config.ConfigurationPath.Replace(config.ConfigurationName, string.Empty);

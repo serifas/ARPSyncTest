@@ -1,6 +1,6 @@
-﻿namespace ARPSynchronos.ARPConfiguration.Configurations;
+﻿namespace MareSynchronos.MareConfiguration.Configurations;
 
-public interface IARPConfiguration
+public interface IMareConfiguration
 {
     int Version { get; set; }
 }

@@ -1,22 +1,22 @@
-﻿using ARPSynchronos.API.Dto.Group;
-using ARPSynchronos.ARPConfiguration;
-using ARPSynchronos.PlayerData.Pairs;
-using ARPSynchronos.Services;
-using ARPSynchronos.Services.Mediator;
-using ARPSynchronos.Services.ServerConfiguration;
-using ARPSynchronos.UI.Components;
-using ARPSynchronos.UI.Handlers;
-using ARPSynchronos.WebAPI;
+﻿using MareSynchronos.API.Dto.Group;
+using MareSynchronos.MareConfiguration;
+using MareSynchronos.PlayerData.Pairs;
+using MareSynchronos.Services;
+using MareSynchronos.Services.Mediator;
+using MareSynchronos.Services.ServerConfiguration;
+using MareSynchronos.UI.Components;
+using MareSynchronos.UI.Handlers;
+using MareSynchronos.WebAPI;
 using Microsoft.Extensions.Logging;
 using System.Collections.Immutable;
 
-namespace ARPSynchronos.UI;
+namespace MareSynchronos.UI;
 
 public class DrawEntityFactory
 {
     private readonly ILogger<DrawEntityFactory> _logger;
     private readonly ApiController _apiController;
-    private readonly ARPMediator _mediator;
+    private readonly MareMediator _mediator;
     private readonly SelectPairForTagUi _selectPairForTagUi;
     private readonly ServerConfigurationManager _serverConfigurationManager;
     private readonly UiSharedService _uiSharedService;
@@ -27,7 +27,7 @@ public class DrawEntityFactory
     private readonly IdDisplayHandler _uidDisplayHandler;
 
     public DrawEntityFactory(ILogger<DrawEntityFactory> logger, ApiController apiController, IdDisplayHandler uidDisplayHandler,
-        SelectTagForPairUi selectTagForPairUi, ARPMediator mediator,
+        SelectTagForPairUi selectTagForPairUi, MareMediator mediator,
         TagHandler tagHandler, SelectPairForTagUi selectPairForTagUi,
         ServerConfigurationManager serverConfigurationManager, UiSharedService uiSharedService,
         PlayerPerformanceConfigService playerPerformanceConfigService, CharaDataManager charaDataManager)

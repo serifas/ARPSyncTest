@@ -1,21 +1,21 @@
 ﻿using Dalamud.Plugin.Services;
-using ARPSynchronos.ARPConfiguration;
+using MareSynchronos.MareConfiguration;
 using Microsoft.Extensions.Logging;
 using System.Text;
 
-namespace ARPSynchronos.Interop;
+namespace MareSynchronos.Interop;
 
 internal sealed class DalamudLogger : ILogger
 {
-    private readonly ARPConfigService _ARPConfigService;
+    private readonly MareConfigService _mareConfigService;
     private readonly string _name;
     private readonly IPluginLog _pluginLog;
     private readonly bool _hasModifiedGameFiles;
 
-    public DalamudLogger(string name, ARPConfigService ARPConfigService, IPluginLog pluginLog, bool hasModifiedGameFiles)
+    public DalamudLogger(string name, MareConfigService mareConfigService, IPluginLog pluginLog, bool hasModifiedGameFiles)
     {
         _name = name;
-        _ARPConfigService = ARPConfigService;
+        _mareConfigService = mareConfigService;
         _pluginLog = pluginLog;
         _hasModifiedGameFiles = hasModifiedGameFiles;
     }
@@ -24,7 +24,7 @@ internal sealed class DalamudLogger : ILogger
 
     public bool IsEnabled(LogLevel logLevel)
     {
-        return (int)_ARPConfigService.Current.LogLevel <= (int)logLevel;
+        return (int)_mareConfigService.Current.LogLevel <= (int)logLevel;
     }
 
     public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)

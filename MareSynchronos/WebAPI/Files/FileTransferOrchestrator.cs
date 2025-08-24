@@ -1,36 +1,36 @@
-﻿using ARPSynchronos.ARPConfiguration;
-using ARPSynchronos.Services.Mediator;
-using ARPSynchronos.WebAPI.Files.Models;
-using ARPSynchronos.WebAPI.SignalR;
+﻿using MareSynchronos.MareConfiguration;
+using MareSynchronos.Services.Mediator;
+using MareSynchronos.WebAPI.Files.Models;
+using MareSynchronos.WebAPI.SignalR;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Reflection;
 
-namespace ARPSynchronos.WebAPI.Files;
+namespace MareSynchronos.WebAPI.Files;
 
 public class FileTransferOrchestrator : DisposableMediatorSubscriberBase
 {
     private readonly ConcurrentDictionary<Guid, bool> _downloadReady = new();
     private readonly HttpClient _httpClient;
-    private readonly ARPConfigService _ARPConfig;
+    private readonly MareConfigService _mareConfig;
     private readonly object _semaphoreModificationLock = new();
     private readonly TokenProvider _tokenProvider;
     private int _availableDownloadSlots;
     private SemaphoreSlim _downloadSemaphore;
     private int CurrentlyUsedDownloadSlots => _availableDownloadSlots - _downloadSemaphore.CurrentCount;
 
-    public FileTransferOrchestrator(ILogger<FileTransferOrchestrator> logger, ARPConfigService ARPConfig,
-        ARPMediator mediator, TokenProvider tokenProvider, HttpClient httpClient) : base(logger, mediator)
+    public FileTransferOrchestrator(ILogger<FileTransferOrchestrator> logger, MareConfigService mareConfig,
+        MareMediator mediator, TokenProvider tokenProvider, HttpClient httpClient) : base(logger, mediator)
     {
-        _ARPConfig = ARPConfig;
+        _mareConfig = mareConfig;
         _tokenProvider = tokenProvider;
         _httpClient = httpClient;
         var ver = Assembly.GetExecutingAssembly().GetName().Version;
-        _httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("ARPSynchronos", ver!.Major + "." + ver!.Minor + "." + ver!.Build));
+        _httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("MareSynchronos", ver!.Major + "." + ver!.Minor + "." + ver!.Build));
 
-        _availableDownloadSlots = ARPConfig.Current.ParallelDownloads;
+        _availableDownloadSlots = mareConfig.Current.ParallelDownloads;
         _downloadSemaphore = new(_availableDownloadSlots, _availableDownloadSlots);
 
         Mediator.Subscribe<ConnectedMessage>(this, (msg) =>
@@ -108,9 +108,9 @@ public class FileTransferOrchestrator : DisposableMediatorSubscriberBase
     {
         lock (_semaphoreModificationLock)
         {
-            if (_availableDownloadSlots != _ARPConfig.Current.ParallelDownloads && _availableDownloadSlots == _downloadSemaphore.CurrentCount)
+            if (_availableDownloadSlots != _mareConfig.Current.ParallelDownloads && _availableDownloadSlots == _downloadSemaphore.CurrentCount)
             {
-                _availableDownloadSlots = _ARPConfig.Current.ParallelDownloads;
+                _availableDownloadSlots = _mareConfig.Current.ParallelDownloads;
                 _downloadSemaphore = new(_availableDownloadSlots, _availableDownloadSlots);
             }
         }
@@ -121,13 +121,13 @@ public class FileTransferOrchestrator : DisposableMediatorSubscriberBase
 
     public long DownloadLimitPerSlot()
     {
-        var limit = _ARPConfig.Current.DownloadSpeedLimitInBytes;
+        var limit = _mareConfig.Current.DownloadSpeedLimitInBytes;
         if (limit <= 0) return 0;
-        limit = _ARPConfig.Current.DownloadSpeedType switch
+        limit = _mareConfig.Current.DownloadSpeedType switch
         {
-            ARPConfiguration.Models.DownloadSpeeds.Bps => limit,
-            ARPConfiguration.Models.DownloadSpeeds.KBps => limit * 1024,
-            ARPConfiguration.Models.DownloadSpeeds.MBps => limit * 1024 * 1024,
+            MareConfiguration.Models.DownloadSpeeds.Bps => limit,
+            MareConfiguration.Models.DownloadSpeeds.KBps => limit * 1024,
+            MareConfiguration.Models.DownloadSpeeds.MBps => limit * 1024 * 1024,
             _ => limit,
         };
         var currentUsedDlSlots = CurrentlyUsedDownloadSlots;

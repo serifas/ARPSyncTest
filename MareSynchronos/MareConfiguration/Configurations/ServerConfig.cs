@@ -1,10 +1,10 @@
-﻿using ARPSynchronos.ARPConfiguration.Models;
-using ARPSynchronos.WebAPI;
+﻿using MareSynchronos.MareConfiguration.Models;
+using MareSynchronos.WebAPI;
 
-namespace ARPSynchronos.ARPConfiguration.Configurations;
+namespace MareSynchronos.MareConfiguration.Configurations;
 
 [Serializable]
-public class ServerConfig : IARPConfiguration
+public class ServerConfig : IMareConfiguration
 {
     public int CurrentServer { get; set; } = 0;
 

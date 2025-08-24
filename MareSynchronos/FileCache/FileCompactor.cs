@@ -1,9 +1,9 @@
-﻿using ARPSynchronos.ARPConfiguration;
-using ARPSynchronos.Services;
+﻿using MareSynchronos.MareConfiguration;
+using MareSynchronos.Services;
 using Microsoft.Extensions.Logging;
 using System.Runtime.InteropServices;
 
-namespace ARPSynchronos.FileCache;
+namespace MareSynchronos.FileCache;
 
 public sealed class FileCompactor
 {
@@ -15,14 +15,14 @@ public sealed class FileCompactor
     private readonly WOF_FILE_COMPRESSION_INFO_V1 _efInfo;
     private readonly ILogger<FileCompactor> _logger;
 
-    private readonly ARPConfigService _ARPConfigService;
+    private readonly MareConfigService _mareConfigService;
     private readonly DalamudUtilService _dalamudUtilService;
 
-    public FileCompactor(ILogger<FileCompactor> logger, ARPConfigService ARPConfigService, DalamudUtilService dalamudUtilService)
+    public FileCompactor(ILogger<FileCompactor> logger, MareConfigService mareConfigService, DalamudUtilService dalamudUtilService)
     {
         _clusterSizes = new(StringComparer.Ordinal);
         _logger = logger;
-        _ARPConfigService = ARPConfigService;
+        _mareConfigService = mareConfigService;
         _dalamudUtilService = dalamudUtilService;
         _efInfo = new WOF_FILE_COMPRESSION_INFO_V1
         {
@@ -50,7 +50,7 @@ public sealed class FileCompactor
         MassCompactRunning = true;
 
         int currentFile = 1;
-        var allFiles = Directory.EnumerateFiles(_ARPConfigService.Current.CacheFolder).ToList();
+        var allFiles = Directory.EnumerateFiles(_mareConfigService.Current.CacheFolder).ToList();
         int allFilesCount = allFiles.Count;
         foreach (var file in allFiles)
         {
@@ -82,7 +82,7 @@ public sealed class FileCompactor
     {
         await File.WriteAllBytesAsync(filePath, decompressedFile, token).ConfigureAwait(false);
 
-        if (_dalamudUtilService.IsWine || !_ARPConfigService.Current.UseCompactor)
+        if (_dalamudUtilService.IsWine || !_mareConfigService.Current.UseCompactor)
         {
             return;
         }

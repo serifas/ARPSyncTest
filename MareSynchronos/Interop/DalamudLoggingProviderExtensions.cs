@@ -1,10 +1,10 @@
 ﻿using Dalamud.Plugin.Services;
-using ARPSynchronos.ARPConfiguration;
+using MareSynchronos.MareConfiguration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 
-namespace ARPSynchronos.Interop;
+namespace MareSynchronos.Interop;
 
 public static class DalamudLoggingProviderExtensions
 {
@@ -13,7 +13,7 @@ public static class DalamudLoggingProviderExtensions
         builder.ClearProviders();
 
         builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<ILoggerProvider, DalamudLoggingProvider>
-            (b => new DalamudLoggingProvider(b.GetRequiredService<ARPConfigService>(), pluginLog, hasModifiedGameFiles)));
+            (b => new DalamudLoggingProvider(b.GetRequiredService<MareConfigService>(), pluginLog, hasModifiedGameFiles)));
         return builder;
     }
 }

@@ -3,17 +3,17 @@ using Dalamud.Interface;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
-using ARPSynchronos.API.Data.Enum;
-using ARPSynchronos.FileCache;
-using ARPSynchronos.Interop.Ipc;
-using ARPSynchronos.ARPConfiguration;
-using ARPSynchronos.Services;
-using ARPSynchronos.Services.Mediator;
-using ARPSynchronos.Utils;
+using MareSynchronos.API.Data.Enum;
+using MareSynchronos.FileCache;
+using MareSynchronos.Interop.Ipc;
+using MareSynchronos.MareConfiguration;
+using MareSynchronos.Services;
+using MareSynchronos.Services.Mediator;
+using MareSynchronos.Utils;
 using Microsoft.Extensions.Logging;
 using System.Numerics;
 
-namespace ARPSynchronos.UI;
+namespace MareSynchronos.UI;
 
 public class DataAnalysisUi : WindowMediatorSubscriberBase
 {
@@ -39,12 +39,12 @@ public class DataAnalysisUi : WindowMediatorSubscriberBase
     private bool _showModal = false;
     private CancellationTokenSource _transientRecordCts = new();
 
-    public DataAnalysisUi(ILogger<DataAnalysisUi> logger, ARPMediator mediator,
+    public DataAnalysisUi(ILogger<DataAnalysisUi> logger, MareMediator mediator,
         CharacterAnalyzer characterAnalyzer, IpcManager ipcManager,
         PerformanceCollectorService performanceCollectorService, UiSharedService uiSharedService,
         PlayerPerformanceConfigService playerPerformanceConfig, TransientResourceManager transientResourceManager,
         TransientConfigService transientConfigService)
-        : base(logger, mediator, "ARP Character Data Analysis", performanceCollectorService)
+        : base(logger, mediator, "ARPSync Character Data Analysis", performanceCollectorService)
     {
         _characterAnalyzer = characterAnalyzer;
         _ipcManager = ipcManager;
@@ -166,10 +166,10 @@ public class DataAnalysisUi : WindowMediatorSubscriberBase
         UiSharedService.DrawTree("What is this? (Explanation / Help)", () =>
         {
             UiSharedService.TextWrapped("This tab allows you to see which transient files are attached to your character.");
-            UiSharedService.TextWrapped("Transient files are files that cannot be resolved to your character permanently. ARP gathers these files in the background while you execute animations, VFX, sound effects, etc.");
-            UiSharedService.TextWrapped("When sending your character data to others, ARP will combine the files listed in \"All Jobs\" and the corresponding currently used job.");
+            UiSharedService.TextWrapped("Transient files are files that cannot be resolved to your character permanently. ARPSync gathers these files in the background while you execute animations, VFX, sound effects, etc.");
+            UiSharedService.TextWrapped("When sending your character data to others, ARPSync will combine the files listed in \"All Jobs\" and the corresponding currently used job.");
             UiSharedService.TextWrapped("The purpose of this tab is primarily informational for you to see which files you are carrying with you. You can remove added game paths, however if you are using the animations etc. again, "
-                + "ARP will automatically attach these after using them. If you disable associated mods in Penumbra, the associated entries here will also be deleted automatically.");
+                + "ARPSync will automatically attach these after using them. If you disable associated mods in Penumbra, the associated entries here will also be deleted automatically.");
         });
 
         ImGuiHelpers.ScaledDummy(5);
@@ -292,7 +292,7 @@ public class DataAnalysisUi : WindowMediatorSubscriberBase
                     }
                 }
                 UiSharedService.AttachToolTip("Hold CTRL to delete all game paths from the displayed list"
-                    + UiSharedService.TooltipSeparator + "You usually do not need to do this. All animation and VFX data will be automatically handled through ARP.");
+                    + UiSharedService.TooltipSeparator + "You usually do not need to do this. All animation and VFX data will be automatically handled through ARPSync.");
                 ImGuiHelpers.ScaledDummy(5);
                 ImGuiHelpers.ScaledDummy(30);
                 ImGui.SameLine();
@@ -366,7 +366,7 @@ public class DataAnalysisUi : WindowMediatorSubscriberBase
         {
             UiSharedService.TextWrapped("This tab allows you to attempt to fix mods that do not sync correctly, especially those with modded models and animations." + Environment.NewLine + Environment.NewLine
                 + "To use this, start the recording, execute one or multiple emotes/animations you want to attempt to fix and check if new data appears in the table below." + Environment.NewLine
-                + "If it doesn't, ARP is not able to catch the data or already has recorded the animation files (check 'Show previously added transient files' to see if not all is already present)." + Environment.NewLine + Environment.NewLine
+                + "If it doesn't, ARPSync is not able to catch the data or already has recorded the animation files (check 'Show previously added transient files' to see if not all is already present)." + Environment.NewLine + Environment.NewLine
                 + "For most animations, vfx, etc. it is enough to just run them once unless they have random variations. Longer animations do not require to play out in their entirety to be captured.");
             ImGuiHelpers.ScaledDummy(5);
             UiSharedService.DrawGroupedCenteredColorText("Important Note: If you need to fix an animation that should apply across multiple jobs, you need to repeat this process with at least one additional job, " +
@@ -406,7 +406,7 @@ public class DataAnalysisUi : WindowMediatorSubscriberBase
 
         ImGuiHelpers.ScaledDummy(5);
         ImGui.Checkbox("Show previously added transient files in the recording", ref _showAlreadyAddedTransients);
-        _uiSharedService.DrawHelpText("Use this only if you want to see what was previously already caught by ARP");
+        _uiSharedService.DrawHelpText("Use this only if you want to see what was previously already caught by ARPSync");
         ImGuiHelpers.ScaledDummy(5);
 
         using (ImRaii.Disabled(_transientResourceManager.IsTransientRecording || _transientResourceManager.RecordedTransients.All(k => !k.AddTransient) || !_acknowledgeReview))
@@ -476,7 +476,7 @@ public class DataAnalysisUi : WindowMediatorSubscriberBase
     {
         UiSharedService.DrawTree("What is this? (Explanation / Help)", () =>
         {
-            UiSharedService.TextWrapped("This tab shows you all files and their sizes that are currently in use through your character and associated entities in ARP");
+            UiSharedService.TextWrapped("This tab shows you all files and their sizes that are currently in use through your character and associated entities in ARPSync");
         });
 
         if (_cachedAnalysis!.Count == 0) return;

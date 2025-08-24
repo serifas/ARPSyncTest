@@ -1,13 +1,13 @@
 ﻿using Dalamud.Memory;
 using Dalamud.Plugin.Services;
 using Dalamud.Utility.Signatures;
-using ARPSynchronos.Services.Mediator;
+using MareSynchronos.Services.Mediator;
 using Microsoft.Extensions.Logging;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace ARPSynchronos.Interop;
+namespace MareSynchronos.Interop;
 
 /// <summary>
 /// Code for spawning mostly taken from https://git.anna.lgbt/anna/OrangeGuidanceTomestone/src/branch/main/client/Vfx.cs
@@ -25,23 +25,23 @@ public unsafe class VfxSpawnManager : DisposableMediatorSubscriberBase
     [Signature("40 53 48 83 EC 20 48 8B D9 48 8B 89 ?? ?? ?? ?? 48 85 C9 74 28 33 D2 E8 ?? ?? ?? ?? 48 8B 8B ?? ?? ?? ?? 48 85 C9")]
     private readonly delegate* unmanaged<VfxStruct*, nint> _staticVfxRemove;
 
-    public VfxSpawnManager(ILogger<VfxSpawnManager> logger, IGameInteropProvider gameInteropProvider, ARPMediator ARPMediator)
-        : base(logger, ARPMediator)
+    public VfxSpawnManager(ILogger<VfxSpawnManager> logger, IGameInteropProvider gameInteropProvider, MareMediator mareMediator)
+        : base(logger, mareMediator)
     {
         gameInteropProvider.InitializeFromAttributes(this);
-        ARPMediator.Subscribe<GposeStartMessage>(this, (msg) =>
+        mareMediator.Subscribe<GposeStartMessage>(this, (msg) =>
         {
             ChangeSpawnVisibility(0f);
         });
-        ARPMediator.Subscribe<GposeEndMessage>(this, (msg) =>
+        mareMediator.Subscribe<GposeEndMessage>(this, (msg) =>
         {
             RestoreSpawnVisiblity();
         });
-        ARPMediator.Subscribe<CutsceneStartMessage>(this, (msg) =>
+        mareMediator.Subscribe<CutsceneStartMessage>(this, (msg) =>
         {
             ChangeSpawnVisibility(0f);
         });
-        ARPMediator.Subscribe<CutsceneEndMessage>(this, (msg) =>
+        mareMediator.Subscribe<CutsceneEndMessage>(this, (msg) =>
         {
             RestoreSpawnVisiblity();
         });

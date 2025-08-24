@@ -1,4 +1,4 @@
-﻿namespace ARPSynchronos.PlayerData.Data;
+﻿namespace MareSynchronos.PlayerData.Data;
 
 public class FileReplacementComparer : IEqualityComparer<FileReplacement>
 {

@@ -1,16 +1,16 @@
-﻿using ARPSynchronos.FileCache;
-using ARPSynchronos.ARPConfiguration;
-using ARPSynchronos.PlayerData.Pairs;
-using ARPSynchronos.PlayerData.Services;
-using ARPSynchronos.Services;
-using ARPSynchronos.Services.Mediator;
-using ARPSynchronos.Services.ServerConfiguration;
+﻿using MareSynchronos.FileCache;
+using MareSynchronos.MareConfiguration;
+using MareSynchronos.PlayerData.Pairs;
+using MareSynchronos.PlayerData.Services;
+using MareSynchronos.Services;
+using MareSynchronos.Services.Mediator;
+using MareSynchronos.Services.ServerConfiguration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 
-namespace ARPSynchronos;
+namespace MareSynchronos;
 
 #pragma warning disable S125 // Sections of code should not be commented out
 /*
@@ -66,21 +66,21 @@ namespace ARPSynchronos;
 */
 #pragma warning restore S125 // Sections of code should not be commented out
 
-public class ARPPlugin : MediatorSubscriberBase, IHostedService
+public class MarePlugin : MediatorSubscriberBase, IHostedService
 {
     private readonly DalamudUtilService _dalamudUtil;
-    private readonly ARPConfigService _ARPConfigService;
+    private readonly MareConfigService _mareConfigService;
     private readonly ServerConfigurationManager _serverConfigurationManager;
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private IServiceScope? _runtimeServiceScope;
     private Task? _launchTask = null;
 
-    public ARPPlugin(ILogger<ARPPlugin> logger, ARPConfigService ARPConfigService,
+    public MarePlugin(ILogger<MarePlugin> logger, MareConfigService mareConfigService,
         ServerConfigurationManager serverConfigurationManager,
         DalamudUtilService dalamudUtil,
-        IServiceScopeFactory serviceScopeFactory, ARPMediator mediator) : base(logger, mediator)
+        IServiceScopeFactory serviceScopeFactory, MareMediator mediator) : base(logger, mediator)
     {
-        _ARPConfigService = ARPConfigService;
+        _mareConfigService = mareConfigService;
         _serverConfigurationManager = serverConfigurationManager;
         _dalamudUtil = dalamudUtil;
         _serviceScopeFactory = serviceScopeFactory;
@@ -90,7 +90,7 @@ public class ARPPlugin : MediatorSubscriberBase, IHostedService
     {
         var version = Assembly.GetExecutingAssembly().GetName().Version!;
         Logger.LogInformation("Launching {name} {major}.{minor}.{build}", "ARP Synchronos", version.Major, version.Minor, version.Build);
-        Mediator.Publish(new EventMessage(new Services.Events.Event(nameof(ARPPlugin), Services.Events.EventSeverity.Informational,
+        Mediator.Publish(new EventMessage(new Services.Events.Event(nameof(MarePlugin), Services.Events.EventSeverity.Informational,
             $"Starting ARP Synchronos {version.Major}.{version.Minor}.{version.Build}")));
 
         Mediator.Subscribe<SwitchToMainUiMessage>(this, (msg) => { if (_launchTask == null || _launchTask.IsCompleted) _launchTask = Task.Run(WaitForPlayerAndLaunchCharacterManager); });
@@ -108,7 +108,7 @@ public class ARPPlugin : MediatorSubscriberBase, IHostedService
 
         DalamudUtilOnLogOut();
 
-        Logger.LogDebug("Halting ARPPlugin");
+        Logger.LogDebug("Halting ARPSync");
 
         return Task.CompletedTask;
     }
@@ -141,7 +141,7 @@ public class ARPPlugin : MediatorSubscriberBase, IHostedService
             _runtimeServiceScope = _serviceScopeFactory.CreateScope();
             _runtimeServiceScope.ServiceProvider.GetRequiredService<UiService>();
             _runtimeServiceScope.ServiceProvider.GetRequiredService<CommandManagerService>();
-            if (!_ARPConfigService.Current.HasValidSetup() || !_serverConfigurationManager.HasValidConfig())
+            if (!_mareConfigService.Current.HasValidSetup() || !_serverConfigurationManager.HasValidConfig())
             {
                 Mediator.Publish(new SwitchToIntroUiMessage());
                 return;
@@ -152,11 +152,11 @@ public class ARPPlugin : MediatorSubscriberBase, IHostedService
             _runtimeServiceScope.ServiceProvider.GetRequiredService<NotificationService>();
 
 #if !DEBUG
-            if (_ARPConfigService.Current.LogLevel != LogLevel.Information)
+            if (_mareConfigService.Current.LogLevel != LogLevel.Information)
             {
                 Mediator.Publish(new NotificationMessage("Abnormal Log Level",
-                    $"Your log level is set to '{_ARPConfigService.Current.LogLevel}' which is not recommended for normal usage. Set it to '{LogLevel.Information}' in \"ARP Settings -> Debug\" unless instructed otherwise.",
-                    ARPConfiguration.Models.NotificationType.Error, TimeSpan.FromSeconds(15000)));
+                    $"Your log level is set to '{_mareConfigService.Current.LogLevel}' which is not recommended for normal usage. Set it to '{LogLevel.Information}' in \"Mare Settings -> Debug\" unless instructed otherwise.",
+                    MareConfiguration.Models.NotificationType.Error, TimeSpan.FromSeconds(15000)));
             }
 #endif
         }

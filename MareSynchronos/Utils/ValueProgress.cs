@@ -1,4 +1,4 @@
-﻿namespace ARPSynchronos.Utils;
+﻿namespace MareSynchronos.Utils;
 
 public class ValueProgress<T> : Progress<T>
 {

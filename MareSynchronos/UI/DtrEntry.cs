@@ -2,39 +2,39 @@
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
 using Dalamud.Plugin.Services;
-using ARPSynchronos.ARPConfiguration;
-using ARPSynchronos.ARPConfiguration.Configurations;
-using ARPSynchronos.PlayerData.Pairs;
-using ARPSynchronos.Services.Mediator;
-using ARPSynchronos.WebAPI;
+using MareSynchronos.MareConfiguration;
+using MareSynchronos.MareConfiguration.Configurations;
+using MareSynchronos.PlayerData.Pairs;
+using MareSynchronos.Services.Mediator;
+using MareSynchronos.WebAPI;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Runtime.InteropServices;
 
-namespace ARPSynchronos.UI;
+namespace MareSynchronos.UI;
 
 public sealed class DtrEntry : IDisposable, IHostedService
 {
     private readonly ApiController _apiController;
     private readonly CancellationTokenSource _cancellationTokenSource = new();
-    private readonly ConfigurationServiceBase<ARPConfig> _configService;
+    private readonly ConfigurationServiceBase<MareConfig> _configService;
     private readonly IDtrBar _dtrBar;
     private readonly Lazy<IDtrBarEntry> _entry;
     private readonly ILogger<DtrEntry> _logger;
-    private readonly ARPMediator _ARPMediator;
+    private readonly MareMediator _mareMediator;
     private readonly PairManager _pairManager;
     private Task? _runTask;
     private string? _text;
     private string? _tooltip;
     private Colors _colors;
 
-    public DtrEntry(ILogger<DtrEntry> logger, IDtrBar dtrBar, ConfigurationServiceBase<ARPConfig> configService, ARPMediator ARPMediator, PairManager pairManager, ApiController apiController)
+    public DtrEntry(ILogger<DtrEntry> logger, IDtrBar dtrBar, ConfigurationServiceBase<MareConfig> configService, MareMediator mareMediator, PairManager pairManager, ApiController apiController)
     {
         _logger = logger;
         _dtrBar = dtrBar;
         _entry = new(CreateEntry);
         _configService = configService;
-        _ARPMediator = ARPMediator;
+        _mareMediator = mareMediator;
         _pairManager = pairManager;
         _apiController = apiController;
     }
@@ -88,8 +88,8 @@ public sealed class DtrEntry : IDisposable, IHostedService
     private IDtrBarEntry CreateEntry()
     {
         _logger.LogTrace("Creating new DtrBar entry");
-        var entry = _dtrBar.Get("ARP Synchronos");
-        entry.OnClick = _ => _ARPMediator.Publish(new UiToggleMessage(typeof(CompactUi)));
+        var entry = _dtrBar.Get("ARPSync");
+        entry.OnClick = _ => _mareMediator.Publish(new UiToggleMessage(typeof(CompactUi)));
 
         return entry;
     }
@@ -146,19 +146,19 @@ public sealed class DtrEntry : IDisposable, IHostedService
                         .Select(x => string.Format("{0}", _configService.Current.PreferNoteInDtrTooltip ? x.GetNote() ?? x.PlayerName : x.PlayerName));
                 }
 
-                tooltip = $"ARP Synchronos: Connected{Environment.NewLine}----------{Environment.NewLine}{string.Join(Environment.NewLine, visiblePairs)}";
+                tooltip = $"ARPSync: Connected{Environment.NewLine}----------{Environment.NewLine}{string.Join(Environment.NewLine, visiblePairs)}";
                 colors = _configService.Current.DtrColorsPairsInRange;
             }
             else
             {
-                tooltip = "ARP Synchronos: Connected";
+                tooltip = "ARPSync: Connected";
                 colors = _configService.Current.DtrColorsDefault;
             }
         }
         else
         {
             text = "\uE044 \uE04C";
-            tooltip = "ARP Synchronos: Not Connected";
+            tooltip = "ARPSync: Not Connected";
             colors = _configService.Current.DtrColorsNotConnected;
         }
 

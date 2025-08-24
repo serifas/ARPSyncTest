@@ -1,6 +1,6 @@
-﻿namespace ARPSynchronos.Services.Mediator;
+﻿namespace MareSynchronos.Services.Mediator;
 
 public interface IMediatorSubscriber
 {
-    ARPMediator Mediator { get; }
+    MareMediator Mediator { get; }
 }

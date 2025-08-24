@@ -1,8 +1,8 @@
-﻿using ARPSynchronos.API.SignalR;
-using ARPSynchronos.Services;
-using ARPSynchronos.Services.Mediator;
-using ARPSynchronos.Services.ServerConfiguration;
-using ARPSynchronos.WebAPI.SignalR.Utils;
+﻿using MareSynchronos.API.SignalR;
+using MareSynchronos.Services;
+using MareSynchronos.Services.Mediator;
+using MareSynchronos.Services.ServerConfiguration;
+using MareSynchronos.WebAPI.SignalR.Utils;
 using MessagePack;
 using MessagePack.Resolvers;
 using Microsoft.AspNetCore.Http.Connections;
@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace ARPSynchronos.WebAPI.SignalR;
+namespace MareSynchronos.WebAPI.SignalR;
 
 public class HubFactory : MediatorSubscriberBase
 {
@@ -21,7 +21,7 @@ public class HubFactory : MediatorSubscriberBase
     private bool _isDisposed = false;
     private readonly bool _isWine = false;
 
-    public HubFactory(ILogger<HubFactory> logger, ARPMediator mediator,
+    public HubFactory(ILogger<HubFactory> logger, MareMediator mediator,
         ServerConfigurationManager serverConfigurationManager,
         TokenProvider tokenProvider, ILoggerProvider pluginLog,
         DalamudUtilService dalamudUtilService) : base(logger, mediator)
@@ -80,7 +80,7 @@ public class HubFactory : MediatorSubscriberBase
         Logger.LogDebug("Building new HubConnection using transport {transport}", transportType);
 
         _instance = new HubConnectionBuilder()
-            .WithUrl(_serverConfigurationManager.CurrentApiUrl + IARPHub.Path, options =>
+            .WithUrl(_serverConfigurationManager.CurrentApiUrl + IMareHub.Path, options =>
             {
                 options.AccessTokenProvider = () => _tokenProvider.GetOrUpdateToken(ct);
                 options.Transports = transportType;

@@ -1,4 +1,4 @@
-﻿namespace ARPSynchronos.WebAPI.SignalR.Utils;
+﻿namespace MareSynchronos.WebAPI.SignalR.Utils;
 
 public enum ServerState
 {

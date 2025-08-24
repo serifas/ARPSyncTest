@@ -1,14 +1,14 @@
 ﻿using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
-using ARPSynchronos.API.Data;
-using ARPSynchronos.Interop;
-using ARPSynchronos.ARPConfiguration;
-using ARPSynchronos.Services.CharaData.Models;
-using ARPSynchronos.Services.Mediator;
-using ARPSynchronos.Services.ServerConfiguration;
+using MareSynchronos.API.Data;
+using MareSynchronos.Interop;
+using MareSynchronos.MareConfiguration;
+using MareSynchronos.Services.CharaData.Models;
+using MareSynchronos.Services.Mediator;
+using MareSynchronos.Services.ServerConfiguration;
 using Microsoft.Extensions.Logging;
 using System.Numerics;
 
-namespace ARPSynchronos.Services;
+namespace MareSynchronos.Services;
 
 public sealed class CharaDataNearbyManager : DisposableMediatorSubscriberBase
 {
@@ -29,7 +29,7 @@ public sealed class CharaDataNearbyManager : DisposableMediatorSubscriberBase
     private (Guid VfxId, PoseEntryExtended Pose)? _hoveredVfx = null;
     private DateTime _lastExecutionTime = DateTime.UtcNow;
     private SemaphoreSlim _sharedDataUpdateSemaphore = new(1, 1);
-    public CharaDataNearbyManager(ILogger<CharaDataNearbyManager> logger, ARPMediator mediator,
+    public CharaDataNearbyManager(ILogger<CharaDataNearbyManager> logger, MareMediator mediator,
         DalamudUtilService dalamudUtilService, VfxSpawnManager vfxSpawnManager,
         ServerConfigurationManager serverConfigurationManager,
         CharaDataConfigService charaDataConfigService) : base(logger, mediator)

@@ -1,6 +1,6 @@
-﻿using ARPSynchronos.API.Dto.Group;
+﻿using MareSynchronos.API.Dto.Group;
 
-namespace ARPSynchronos.API.Data.Comparer;
+namespace MareSynchronos.API.Data.Comparer;
 
 public class GroupDtoComparer : IEqualityComparer<GroupDto>
 {

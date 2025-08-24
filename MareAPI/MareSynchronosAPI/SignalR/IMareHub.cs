@@ -1,16 +1,16 @@
-﻿using ARPSynchronos.API.Data;
-using ARPSynchronos.API.Data.Enum;
-using ARPSynchronos.API.Dto;
-using ARPSynchronos.API.Dto.CharaData;
-using ARPSynchronos.API.Dto.Group;
-using ARPSynchronos.API.Dto.User;
+﻿using MareSynchronos.API.Data;
+using MareSynchronos.API.Data.Enum;
+using MareSynchronos.API.Dto;
+using MareSynchronos.API.Dto.CharaData;
+using MareSynchronos.API.Dto.Group;
+using MareSynchronos.API.Dto.User;
 
-namespace ARPSynchronos.API.SignalR;
+namespace MareSynchronos.API.SignalR;
 
-public interface IARPHub
+public interface IMareHub
 {
     const int ApiVersion = 33;
-    const string Path = "/ARP";
+    const string Path = "/mare";
 
     Task<bool> CheckClientHealth();
 

@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace ARPSynchronos.WebAPI.Files.Models;
+namespace MareSynchronos.WebAPI.Files.Models;
 
 public class ProgressableStreamContent : StreamContent
 {

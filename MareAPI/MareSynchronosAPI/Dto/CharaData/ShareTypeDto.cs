@@ -1,4 +1,4 @@
-﻿namespace ARPSynchronos.API.Dto.CharaData;
+﻿namespace MareSynchronos.API.Dto.CharaData;
 
 public enum ShareTypeDto
 {

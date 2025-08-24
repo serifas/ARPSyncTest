@@ -1,13 +1,13 @@
 ﻿using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.Utility.Raii;
-using ARPSynchronos.API.Data.Extensions;
-using ARPSynchronos.PlayerData.Pairs;
-using ARPSynchronos.UI.Handlers;
-using ARPSynchronos.WebAPI;
+using MareSynchronos.API.Data.Extensions;
+using MareSynchronos.PlayerData.Pairs;
+using MareSynchronos.UI.Handlers;
+using MareSynchronos.WebAPI;
 using System.Collections.Immutable;
 
-namespace ARPSynchronos.UI.Components;
+namespace MareSynchronos.UI.Components;
 
 public class DrawFolderTag : DrawFolderBase
 {

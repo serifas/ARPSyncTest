@@ -1,4 +1,4 @@
-﻿namespace ARPSynchronos.WebAPI.SignalR;
+﻿namespace MareSynchronos.WebAPI.SignalR;
 
 public record JwtIdentifier(string ApiUrl, string CharaHash, string UID, string SecretKeyOrOAuth)
 {

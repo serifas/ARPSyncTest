@@ -1,6 +1,6 @@
 ﻿using MessagePack;
 
-namespace ARPSynchronos.API.Data;
+namespace MareSynchronos.API.Data;
 
 [MessagePackObject(keyAsPropertyName: true)]
 public record GroupData(string GID, string? Alias = null)

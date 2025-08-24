@@ -1,4 +1,4 @@
-﻿namespace ARPSynchronos.Interop.Ipc;
+﻿namespace MareSynchronos.Interop.Ipc;
 
 public interface IIpcCaller : IDisposable
 {

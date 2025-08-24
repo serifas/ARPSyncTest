@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace ARPSynchronos.UI.Components.Popup;
+namespace MareSynchronos.UI.Components.Popup;
 
 public interface IPopupHandler
 {

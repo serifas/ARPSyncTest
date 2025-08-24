@@ -1,4 +1,4 @@
-﻿namespace ARPSynchronos.Services.CharaData.Models;
+﻿namespace MareSynchronos.Services.CharaData.Models;
 
 public sealed record HandledCharaDataEntry(string Name, bool IsSelf, Guid? CustomizePlus, CharaDataMetaInfoExtendedDto MetaInfo)
 {

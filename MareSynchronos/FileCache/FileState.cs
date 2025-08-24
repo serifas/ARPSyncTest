@@ -1,4 +1,4 @@
-﻿namespace ARPSynchronos.FileCache;
+﻿namespace MareSynchronos.FileCache;
 
 public enum FileState
 {

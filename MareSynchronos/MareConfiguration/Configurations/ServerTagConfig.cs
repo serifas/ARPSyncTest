@@ -1,8 +1,8 @@
-﻿using ARPSynchronos.ARPConfiguration.Models;
+﻿using MareSynchronos.MareConfiguration.Models;
 
-namespace ARPSynchronos.ARPConfiguration.Configurations;
+namespace MareSynchronos.MareConfiguration.Configurations;
 
-public class ServerTagConfig : IARPConfiguration
+public class ServerTagConfig : IMareConfiguration
 {
     public Dictionary<string, ServerTagStorage> ServerTagStorage { get; set; } = new(StringComparer.OrdinalIgnoreCase);
     public int Version { get; set; } = 0;

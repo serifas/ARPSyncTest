@@ -1,6 +1,6 @@
 ﻿using MessagePack;
 
-namespace ARPSynchronos.API.Dto;
+namespace MareSynchronos.API.Dto;
 
 [MessagePackObject(keyAsPropertyName: true)]
 public record SystemInfoDto

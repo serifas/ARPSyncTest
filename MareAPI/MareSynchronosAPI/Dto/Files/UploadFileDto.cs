@@ -1,6 +1,6 @@
 ﻿using MessagePack;
 
-namespace ARPSynchronos.API.Dto.Files;
+namespace MareSynchronos.API.Dto.Files;
 
 [MessagePackObject(keyAsPropertyName: true)]
 public record UploadFileDto : ITransferFileDto

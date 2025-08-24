@@ -1,7 +1,7 @@
-﻿using ARPSynchronos.API.Data;
-using ARPSynchronos.API.Dto.CharaData;
+﻿using MareSynchronos.API.Data;
+using MareSynchronos.API.Dto.CharaData;
 
-namespace ARPSynchronos.Services.CharaData.Models;
+namespace MareSynchronos.Services.CharaData.Models;
 
 public sealed record CharaDataExtendedUpdateDto : CharaDataUpdateDto
 {

@@ -1,6 +1,6 @@
-﻿using ARPSynchronos.API.Data.Enum;
+﻿using MareSynchronos.API.Data.Enum;
 
-namespace ARPSynchronos.API.Data.Extensions;
+namespace MareSynchronos.API.Data.Extensions;
 
 public static class GroupUserPermissionsExtensions
 {

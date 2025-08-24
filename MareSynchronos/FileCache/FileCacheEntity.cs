@@ -1,6 +1,6 @@
 ﻿#nullable disable
 
-namespace ARPSynchronos.FileCache;
+namespace MareSynchronos.FileCache;
 
 public class FileCacheEntity
 {

@@ -1,4 +1,4 @@
-﻿namespace ARPSynchronos.API.Dto.Files;
+﻿namespace MareSynchronos.API.Dto.Files;
 
 public interface ITransferFileDto
 {

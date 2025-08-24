@@ -1,25 +1,25 @@
-using ARPSynchronos.API.Data;
-using ARPSynchronos.FileCache;
-using ARPSynchronos.ARPConfiguration;
-using ARPSynchronos.PlayerData.Handlers;
-using ARPSynchronos.Services.Events;
-using ARPSynchronos.Services.Mediator;
-using ARPSynchronos.UI;
-using ARPSynchronos.WebAPI.Files.Models;
+using MareSynchronos.API.Data;
+using MareSynchronos.FileCache;
+using MareSynchronos.MareConfiguration;
+using MareSynchronos.PlayerData.Handlers;
+using MareSynchronos.Services.Events;
+using MareSynchronos.Services.Mediator;
+using MareSynchronos.UI;
+using MareSynchronos.WebAPI.Files.Models;
 using Microsoft.Extensions.Logging;
 
-namespace ARPSynchronos.Services;
+namespace MareSynchronos.Services;
 
 public class PlayerPerformanceService
 {
     private readonly FileCacheManager _fileCacheManager;
     private readonly XivDataAnalyzer _xivDataAnalyzer;
     private readonly ILogger<PlayerPerformanceService> _logger;
-    private readonly ARPMediator _mediator;
+    private readonly MareMediator _mediator;
     private readonly PlayerPerformanceConfigService _playerPerformanceConfigService;
     private readonly Dictionary<string, bool> _warnedForPlayers = new(StringComparer.Ordinal);
 
-    public PlayerPerformanceService(ILogger<PlayerPerformanceService> logger, ARPMediator mediator,
+    public PlayerPerformanceService(ILogger<PlayerPerformanceService> logger, MareMediator mediator,
         PlayerPerformanceConfigService playerPerformanceConfigService, FileCacheManager fileCacheManager,
         XivDataAnalyzer xivDataAnalyzer)
     {
@@ -94,7 +94,7 @@ public class PlayerPerformanceService
             }
 
             _mediator.Publish(new NotificationMessage($"{pairHandler.Pair.PlayerName} ({pairHandler.Pair.UserData.AliasOrUID}) exceeds performance threshold(s)",
-                warningText, ARPConfiguration.Models.NotificationType.Warning));
+                warningText, MareConfiguration.Models.NotificationType.Warning));
         }
 
         return true;
@@ -142,7 +142,7 @@ public class PlayerPerformanceService
                 $"Player {pair.PlayerName} ({pair.UserData.AliasOrUID}) exceeded your configured triangle auto pause threshold (" +
                 $"{triUsage}/{config.TrisAutoPauseThresholdThousands * 1000} triangles)" +
                 $" and has been automatically paused.",
-                ARPConfiguration.Models.NotificationType.Warning));
+                MareConfiguration.Models.NotificationType.Warning));
 
             _mediator.Publish(new EventMessage(new Event(pair.PlayerName, pair.UserData, nameof(PlayerPerformanceService), EventSeverity.Warning,
                 $"Exceeds triangle threshold: automatically paused ({triUsage}/{config.TrisAutoPauseThresholdThousands * 1000} triangles)")));
@@ -218,7 +218,7 @@ public class PlayerPerformanceService
                 $"Player {pair.PlayerName} ({pair.UserData.AliasOrUID}) exceeded your configured VRAM auto pause threshold (" +
                 $"{UiSharedService.ByteToString(vramUsage, addSuffix: true)}/{config.VRAMSizeAutoPauseThresholdMiB}MiB)" +
                 $" and has been automatically paused.",
-                ARPConfiguration.Models.NotificationType.Warning));
+                MareConfiguration.Models.NotificationType.Warning));
 
             _mediator.Publish(new PauseMessage(pair.UserData));
 

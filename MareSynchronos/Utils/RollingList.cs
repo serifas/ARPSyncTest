@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace ARPSynchronos.Utils;
+namespace MareSynchronos.Utils;
 
 public class RollingList<T> : IEnumerable<T>
 {

@@ -1,31 +1,31 @@
 ﻿using Dalamud.Game.Command;
 using Dalamud.Plugin.Services;
-using ARPSynchronos.FileCache;
-using ARPSynchronos.ARPConfiguration;
-using ARPSynchronos.ARPConfiguration.Models;
-using ARPSynchronos.Services.Mediator;
-using ARPSynchronos.Services.ServerConfiguration;
-using ARPSynchronos.UI;
-using ARPSynchronos.WebAPI;
+using MareSynchronos.FileCache;
+using MareSynchronos.MareConfiguration;
+using MareSynchronos.MareConfiguration.Models;
+using MareSynchronos.Services.Mediator;
+using MareSynchronos.Services.ServerConfiguration;
+using MareSynchronos.UI;
+using MareSynchronos.WebAPI;
 using System.Globalization;
 
-namespace ARPSynchronos.Services;
+namespace MareSynchronos.Services;
 
 public sealed class CommandManagerService : IDisposable
 {
-    private const string _commandName = "/ARP";
+    private const string _commandName = "/arpsync";
 
     private readonly ApiController _apiController;
     private readonly ICommandManager _commandManager;
-    private readonly ARPMediator _mediator;
-    private readonly ARPConfigService _ARPConfigService;
+    private readonly MareMediator _mediator;
+    private readonly MareConfigService _mareConfigService;
     private readonly PerformanceCollectorService _performanceCollectorService;
     private readonly CacheMonitor _cacheMonitor;
     private readonly ServerConfigurationManager _serverConfigurationManager;
 
     public CommandManagerService(ICommandManager commandManager, PerformanceCollectorService performanceCollectorService,
         ServerConfigurationManager serverConfigurationManager, CacheMonitor periodicFileScanner,
-        ApiController apiController, ARPMediator mediator, ARPConfigService ARPConfigService)
+        ApiController apiController, MareMediator mediator, MareConfigService mareConfigService)
     {
         _commandManager = commandManager;
         _performanceCollectorService = performanceCollectorService;
@@ -33,16 +33,16 @@ public sealed class CommandManagerService : IDisposable
         _cacheMonitor = periodicFileScanner;
         _apiController = apiController;
         _mediator = mediator;
-        _ARPConfigService = ARPConfigService;
+        _mareConfigService = mareConfigService;
         _commandManager.AddHandler(_commandName, new CommandInfo(OnCommand)
         {
-            HelpMessage = "Opens the ARP Synchronos UI" + Environment.NewLine + Environment.NewLine +
+            HelpMessage = "Opens the ARP Sync UI" + Environment.NewLine + Environment.NewLine +
                 "Additionally possible commands:" + Environment.NewLine +
-                "\t /ARP toggle - Disconnects from ARP, if connected. Connects to ARP, if disconnected" + Environment.NewLine +
-                "\t /ARP toggle on|off - Connects or disconnects to ARP respectively" + Environment.NewLine +
-                "\t /ARP gpose - Opens the ARP Character Data Hub window" + Environment.NewLine +
-                "\t /ARP analyze - Opens the ARP Character Data Analysis window" + Environment.NewLine +
-                "\t /ARP settings - Opens the ARP Settings window"
+                "\t /arpsync toggle - Disconnects from ARPSync, if connected. Connects to ARPSync, if disconnected" + Environment.NewLine +
+                "\t /arpsync toggle on|off - Connects or disconnects to ARPSync respectively" + Environment.NewLine +
+                "\t /arpsync gpose - Opens the ARPSync Character Data Hub window" + Environment.NewLine +
+                "\t /arpsync analyze - Opens the ARPSync Character Data Analysis window" + Environment.NewLine +
+                "\t /arpsync settings - Opens the ARPSync Settings window"
         });
     }
 
@@ -58,21 +58,21 @@ public sealed class CommandManagerService : IDisposable
         if (splitArgs.Length == 0)
         {
             // Interpret this as toggling the UI
-            if (_ARPConfigService.Current.HasValidSetup())
+            if (_mareConfigService.Current.HasValidSetup())
                 _mediator.Publish(new UiToggleMessage(typeof(CompactUi)));
             else
                 _mediator.Publish(new UiToggleMessage(typeof(IntroUi)));
             return;
         }
 
-        if (!_ARPConfigService.Current.HasValidSetup())
+        if (!_mareConfigService.Current.HasValidSetup())
             return;
 
         if (string.Equals(splitArgs[0], "toggle", StringComparison.OrdinalIgnoreCase))
         {
             if (_apiController.ServerState == WebAPI.SignalR.Utils.ServerState.Disconnecting)
             {
-                _mediator.Publish(new NotificationMessage("ARP disconnecting", "Cannot use /toggle while ARP Synchronos is still disconnecting",
+                _mediator.Publish(new NotificationMessage("ARPSync disconnecting", "Cannot use /toggle while Mare Synchronos is still disconnecting",
                     NotificationType.Error));
             }
 

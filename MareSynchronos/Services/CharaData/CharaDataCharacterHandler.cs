@@ -1,12 +1,12 @@
-﻿using ARPSynchronos.API.Data.Enum;
-using ARPSynchronos.Interop.Ipc;
-using ARPSynchronos.PlayerData.Factories;
-using ARPSynchronos.PlayerData.Handlers;
-using ARPSynchronos.Services.CharaData.Models;
-using ARPSynchronos.Services.Mediator;
+﻿using MareSynchronos.API.Data.Enum;
+using MareSynchronos.Interop.Ipc;
+using MareSynchronos.PlayerData.Factories;
+using MareSynchronos.PlayerData.Handlers;
+using MareSynchronos.Services.CharaData.Models;
+using MareSynchronos.Services.Mediator;
 using Microsoft.Extensions.Logging;
 
-namespace ARPSynchronos.Services;
+namespace MareSynchronos.Services;
 
 public sealed class CharaDataCharacterHandler : DisposableMediatorSubscriberBase
 {
@@ -17,7 +17,7 @@ public sealed class CharaDataCharacterHandler : DisposableMediatorSubscriberBase
 
     public IEnumerable<HandledCharaDataEntry> HandledCharaData => _handledCharaData;
 
-    public CharaDataCharacterHandler(ILogger<CharaDataCharacterHandler> logger, ARPMediator mediator,
+    public CharaDataCharacterHandler(ILogger<CharaDataCharacterHandler> logger, MareMediator mediator,
         GameObjectHandlerFactory gameObjectHandlerFactory, DalamudUtilService dalamudUtilService,
         IpcManager ipcManager)
         : base(logger, mediator)

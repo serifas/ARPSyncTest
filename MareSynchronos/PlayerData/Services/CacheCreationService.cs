@@ -1,12 +1,12 @@
-﻿using ARPSynchronos.API.Data.Enum;
-using ARPSynchronos.PlayerData.Data;
-using ARPSynchronos.PlayerData.Factories;
-using ARPSynchronos.PlayerData.Handlers;
-using ARPSynchronos.Services;
-using ARPSynchronos.Services.Mediator;
+﻿using MareSynchronos.API.Data.Enum;
+using MareSynchronos.PlayerData.Data;
+using MareSynchronos.PlayerData.Factories;
+using MareSynchronos.PlayerData.Handlers;
+using MareSynchronos.Services;
+using MareSynchronos.Services.Mediator;
 using Microsoft.Extensions.Logging;
 
-namespace ARPSynchronos.PlayerData.Services;
+namespace MareSynchronos.PlayerData.Services;
 
 public sealed class CacheCreationService : DisposableMediatorSubscriberBase
 {
@@ -23,7 +23,7 @@ public sealed class CacheCreationService : DisposableMediatorSubscriberBase
     private bool _haltCharaDataCreation;
     private bool _isZoning = false;
 
-    public CacheCreationService(ILogger<CacheCreationService> logger, ARPMediator mediator, GameObjectHandlerFactory gameObjectHandlerFactory,
+    public CacheCreationService(ILogger<CacheCreationService> logger, MareMediator mediator, GameObjectHandlerFactory gameObjectHandlerFactory,
         PlayerDataFactory characterDataFactory, DalamudUtilService dalamudUtil) : base(logger, mediator)
     {
         _characterDataFactory = characterDataFactory;

@@ -1,10 +1,10 @@
-﻿using ARPSynchronos.ARPConfiguration.Models;
+﻿using MareSynchronos.MareConfiguration.Models;
 
-namespace ARPSynchronos.ARPConfiguration.Configurations;
+namespace MareSynchronos.MareConfiguration.Configurations;
 
-public class CharaDataConfig : IARPConfiguration
+public class CharaDataConfig : IMareConfiguration
 {
-    public bool OpenARPHubOnGposeStart { get; set; } = false;
+    public bool OpenMareHubOnGposeStart { get; set; } = false;
     public string LastSavedCharaDataLocation { get; set; } = string.Empty;
     public Dictionary<string, CharaDataFavorite> FavoriteCodes { get; set; } = [];
     public bool DownloadMcdDataOnConnection { get; set; } = true;

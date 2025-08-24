@@ -1,16 +1,16 @@
 ﻿using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
-using ARPSynchronos.API.Data.Enum;
-using ARPSynchronos.API.Data.Extensions;
-using ARPSynchronos.PlayerData.Pairs;
-using ARPSynchronos.Services;
-using ARPSynchronos.Services.Mediator;
-using ARPSynchronos.Utils;
-using ARPSynchronos.WebAPI;
+using MareSynchronos.API.Data.Enum;
+using MareSynchronos.API.Data.Extensions;
+using MareSynchronos.PlayerData.Pairs;
+using MareSynchronos.Services;
+using MareSynchronos.Services.Mediator;
+using MareSynchronos.Utils;
+using MareSynchronos.WebAPI;
 using Microsoft.Extensions.Logging;
 
-namespace ARPSynchronos.UI;
+namespace MareSynchronos.UI;
 
 public class PermissionWindowUI : WindowMediatorSubscriberBase
 {
@@ -20,9 +20,9 @@ public class PermissionWindowUI : WindowMediatorSubscriberBase
     private readonly ApiController _apiController;
     private UserPermissions _ownPermissions;
 
-    public PermissionWindowUI(ILogger<PermissionWindowUI> logger, Pair pair, ARPMediator mediator, UiSharedService uiSharedService,
+    public PermissionWindowUI(ILogger<PermissionWindowUI> logger, Pair pair, MareMediator mediator, UiSharedService uiSharedService,
         ApiController apiController, PerformanceCollectorService performanceCollectorService)
-        : base(logger, mediator, "Permissions for " + pair.UserData.AliasOrUID + "###ARPSynchronosPermissions" + pair.UserData.UID, performanceCollectorService)
+        : base(logger, mediator, "Permissions for " + pair.UserData.AliasOrUID + "###MareSynchronosPermissions" + pair.UserData.UID, performanceCollectorService)
     {
         Pair = pair;
         _uiSharedService = uiSharedService;
@@ -175,7 +175,7 @@ public class PermissionWindowUI : WindowMediatorSubscriberBase
                 new(StringComparer.Ordinal)
             ));
         }
-        UiSharedService.AttachToolTip("This will set all permissions to your defined default permissions in the ARP Settings");
+        UiSharedService.AttachToolTip("This will set all permissions to your defined default permissions in the ARPSync Settings");
 
         var ySize = ImGui.GetCursorPosY() + style.FramePadding.Y * ImGuiHelpers.GlobalScale + style.FrameBorderSize;
         ImGui.SetWindowSize(new(400, ySize));

@@ -1,13 +1,13 @@
 ﻿using Dalamud.Interface;
 using Dalamud.Interface.ImGuiFileDialog;
 using Dalamud.Interface.Windowing;
-using ARPSynchronos.ARPConfiguration;
-using ARPSynchronos.Services.Mediator;
-using ARPSynchronos.UI;
-using ARPSynchronos.UI.Components.Popup;
+using MareSynchronos.MareConfiguration;
+using MareSynchronos.Services.Mediator;
+using MareSynchronos.UI;
+using MareSynchronos.UI.Components.Popup;
 using Microsoft.Extensions.Logging;
 
-namespace ARPSynchronos.Services;
+namespace MareSynchronos.Services;
 
 public sealed class UiService : DisposableMediatorSubscriberBase
 {
@@ -15,20 +15,20 @@ public sealed class UiService : DisposableMediatorSubscriberBase
     private readonly IUiBuilder _uiBuilder;
     private readonly FileDialogManager _fileDialogManager;
     private readonly ILogger<UiService> _logger;
-    private readonly ARPConfigService _ARPConfigService;
+    private readonly MareConfigService _mareConfigService;
     private readonly WindowSystem _windowSystem;
     private readonly UiFactory _uiFactory;
 
     public UiService(ILogger<UiService> logger, IUiBuilder uiBuilder,
-        ARPConfigService ARPConfigService, WindowSystem windowSystem,
+        MareConfigService mareConfigService, WindowSystem windowSystem,
         IEnumerable<WindowMediatorSubscriberBase> windows,
         UiFactory uiFactory, FileDialogManager fileDialogManager,
-        ARPMediator ARPMediator) : base(logger, ARPMediator)
+        MareMediator mareMediator) : base(logger, mareMediator)
     {
         _logger = logger;
         _logger.LogTrace("Creating {type}", GetType().Name);
         _uiBuilder = uiBuilder;
-        _ARPConfigService = ARPConfigService;
+        _mareConfigService = mareConfigService;
         _windowSystem = windowSystem;
         _uiFactory = uiFactory;
         _fileDialogManager = fileDialogManager;
@@ -86,7 +86,7 @@ public sealed class UiService : DisposableMediatorSubscriberBase
 
     public void ToggleMainUi()
     {
-        if (_ARPConfigService.Current.HasValidSetup())
+        if (_mareConfigService.Current.HasValidSetup())
             Mediator.Publish(new UiToggleMessage(typeof(CompactUi)));
         else
             Mediator.Publish(new UiToggleMessage(typeof(IntroUi)));
@@ -94,7 +94,7 @@ public sealed class UiService : DisposableMediatorSubscriberBase
 
     public void ToggleUi()
     {
-        if (_ARPConfigService.Current.HasValidSetup())
+        if (_mareConfigService.Current.HasValidSetup())
             Mediator.Publish(new UiToggleMessage(typeof(SettingsUi)));
         else
             Mediator.Publish(new UiToggleMessage(typeof(IntroUi)));

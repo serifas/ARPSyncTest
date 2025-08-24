@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace ARPSynchronos.Services.Mediator;
+namespace MareSynchronos.Services.Mediator;
 
 public abstract class DisposableMediatorSubscriberBase : MediatorSubscriberBase, IDisposable
 {
-    protected DisposableMediatorSubscriberBase(ILogger logger, ARPMediator mediator) : base(logger, mediator)
+    protected DisposableMediatorSubscriberBase(ILogger logger, MareMediator mediator) : base(logger, mediator)
     {
     }
 

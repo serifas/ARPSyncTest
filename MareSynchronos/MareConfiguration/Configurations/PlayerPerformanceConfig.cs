@@ -1,6 +1,6 @@
-﻿namespace ARPSynchronos.ARPConfiguration.Configurations;
+﻿namespace MareSynchronos.MareConfiguration.Configurations;
 
-public class PlayerPerformanceConfig : IARPConfiguration
+public class PlayerPerformanceConfig : IMareConfiguration
 {
     public int Version { get; set; } = 1;
     public bool ShowPerformanceIndicator { get; set; } = true;

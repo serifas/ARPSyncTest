@@ -1,21 +1,21 @@
 ﻿using Dalamud.Game.ClientState.Objects.Types;
 using K4os.Compression.LZ4.Legacy;
-using ARPSynchronos.API.Data;
-using ARPSynchronos.API.Dto.CharaData;
-using ARPSynchronos.Interop.Ipc;
-using ARPSynchronos.ARPConfiguration;
-using ARPSynchronos.PlayerData.Factories;
-using ARPSynchronos.PlayerData.Handlers;
-using ARPSynchronos.PlayerData.Pairs;
-using ARPSynchronos.Services.CharaData.Models;
-using ARPSynchronos.Services.Mediator;
-using ARPSynchronos.Utils;
-using ARPSynchronos.WebAPI;
+using MareSynchronos.API.Data;
+using MareSynchronos.API.Dto.CharaData;
+using MareSynchronos.Interop.Ipc;
+using MareSynchronos.MareConfiguration;
+using MareSynchronos.PlayerData.Factories;
+using MareSynchronos.PlayerData.Handlers;
+using MareSynchronos.PlayerData.Pairs;
+using MareSynchronos.Services.CharaData.Models;
+using MareSynchronos.Services.Mediator;
+using MareSynchronos.Utils;
+using MareSynchronos.WebAPI;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 using System.Text;
 
-namespace ARPSynchronos.Services;
+namespace MareSynchronos.Services;
 
 public sealed partial class CharaDataManager : DisposableMediatorSubscriberBase
 {
@@ -42,10 +42,10 @@ public sealed partial class CharaDataManager : DisposableMediatorSubscriberBase
 
     public CharaDataManager(ILogger<CharaDataManager> logger, ApiController apiController,
         CharaDataFileHandler charaDataFileHandler,
-        ARPMediator ARPMediator, IpcManager ipcManager, DalamudUtilService dalamudUtilService,
+        MareMediator mareMediator, IpcManager ipcManager, DalamudUtilService dalamudUtilService,
         FileDownloadManagerFactory fileDownloadManagerFactory,
         CharaDataConfigService charaDataConfigService, CharaDataNearbyManager charaDataNearbyManager,
-        CharaDataCharacterHandler charaDataCharacterHandler, PairManager pairManager) : base(logger, ARPMediator)
+        CharaDataCharacterHandler charaDataCharacterHandler, PairManager pairManager) : base(logger, mareMediator)
     {
         _apiController = apiController;
         _fileHandler = charaDataFileHandler;
@@ -55,7 +55,7 @@ public sealed partial class CharaDataManager : DisposableMediatorSubscriberBase
         _nearbyManager = charaDataNearbyManager;
         _characterHandler = charaDataCharacterHandler;
         _pairManager = pairManager;
-        ARPMediator.Subscribe<ConnectedMessage>(this, (msg) =>
+        mareMediator.Subscribe<ConnectedMessage>(this, (msg) =>
         {
             _connectCts?.Cancel();
             _connectCts?.Dispose();
@@ -75,7 +75,7 @@ public sealed partial class CharaDataManager : DisposableMediatorSubscriberBase
                 _ = GetAllSharedData(token);
             }
         });
-        ARPMediator.Subscribe<DisconnectedMessage>(this, (msg) =>
+        mareMediator.Subscribe<DisconnectedMessage>(this, (msg) =>
         {
             _ownCharaData.Clear();
             _metaInfoCache.Clear();
@@ -98,7 +98,7 @@ public sealed partial class CharaDataManager : DisposableMediatorSubscriberBase
     public IEnumerable<HandledCharaDataEntry> HandledCharaData => _characterHandler.HandledCharaData;
     public bool Initialized { get; private set; }
     public CharaDataMetaInfoExtendedDto? LastDownloadedMetaInfo { get; private set; }
-    public Task<(ARPCharaFileHeader LoadedFile, long ExpectedLength)>? LoadedMcdfHeader { get; private set; }
+    public Task<(MareCharaFileHeader LoadedFile, long ExpectedLength)>? LoadedMcdfHeader { get; private set; }
     public int MaxCreatableCharaData { get; private set; }
     public Task? McdfApplicationTask { get; private set; }
     public List<CharaDataMetaInfoExtendedDto> NearbyData => _nearbyData;
@@ -519,7 +519,7 @@ public sealed partial class CharaDataManager : DisposableMediatorSubscriberBase
         }
     }
 
-    public void SaveARPCharaFile(string description, string filePath)
+    public void SaveMareCharaFile(string description, string filePath)
     {
         UiBlockingComputation = Task.Run(async () => await _fileHandler.SaveCharaFileAsync(description, filePath).ConfigureAwait(false));
     }

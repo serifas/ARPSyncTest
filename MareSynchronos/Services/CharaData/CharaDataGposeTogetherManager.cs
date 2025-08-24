@@ -1,17 +1,17 @@
 ﻿using Dalamud.Game.ClientState.Objects.SubKinds;
-using ARPSynchronos.API.Data;
-using ARPSynchronos.API.Dto.CharaData;
-using ARPSynchronos.Interop;
-using ARPSynchronos.Interop.Ipc;
-using ARPSynchronos.Services.CharaData.Models;
-using ARPSynchronos.Services.Mediator;
-using ARPSynchronos.WebAPI;
+using MareSynchronos.API.Data;
+using MareSynchronos.API.Dto.CharaData;
+using MareSynchronos.Interop;
+using MareSynchronos.Interop.Ipc;
+using MareSynchronos.Services.CharaData.Models;
+using MareSynchronos.Services.Mediator;
+using MareSynchronos.WebAPI;
 using Microsoft.Extensions.Logging;
 using System.Globalization;
 using System.Numerics;
 using System.Text.Json.Nodes;
 
-namespace ARPSynchronos.Services.CharaData;
+namespace MareSynchronos.Services.CharaData;
 
 public class CharaDataGposeTogetherManager : DisposableMediatorSubscriberBase
 {
@@ -30,7 +30,7 @@ public class CharaDataGposeTogetherManager : DisposableMediatorSubscriberBase
     private CancellationTokenSource _lobbyCts = new();
     private int _poseGenerationExecutions = 0;
 
-    public CharaDataGposeTogetherManager(ILogger<CharaDataGposeTogetherManager> logger, ARPMediator mediator,
+    public CharaDataGposeTogetherManager(ILogger<CharaDataGposeTogetherManager> logger, MareMediator mediator,
             ApiController apiController, IpcCallerBrio brio, DalamudUtilService dalamudUtil, VfxSpawnManager vfxSpawnManager,
         CharaDataFileHandler charaDataFileHandler, CharaDataManager charaDataManager) : base(logger, mediator)
     {

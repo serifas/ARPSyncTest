@@ -1,12 +1,12 @@
-﻿using ARPSynchronos.API.Data;
-using ARPSynchronos.Services;
-using ARPSynchronos.Services.Mediator;
-using ARPSynchronos.Utils;
-using ARPSynchronos.WebAPI;
-using ARPSynchronos.WebAPI.Files;
+﻿using MareSynchronos.API.Data;
+using MareSynchronos.Services;
+using MareSynchronos.Services.Mediator;
+using MareSynchronos.Utils;
+using MareSynchronos.WebAPI;
+using MareSynchronos.WebAPI.Files;
 using Microsoft.Extensions.Logging;
 
-namespace ARPSynchronos.PlayerData.Pairs;
+namespace MareSynchronos.PlayerData.Pairs;
 
 public class VisibleUserDataDistributor : DisposableMediatorSubscriberBase
 {
@@ -24,7 +24,7 @@ public class VisibleUserDataDistributor : DisposableMediatorSubscriberBase
 
 
     public VisibleUserDataDistributor(ILogger<VisibleUserDataDistributor> logger, ApiController apiController, DalamudUtilService dalamudUtil,
-        PairManager pairManager, ARPMediator mediator, FileUploadManager fileTransferManager) : base(logger, mediator)
+        PairManager pairManager, MareMediator mediator, FileUploadManager fileTransferManager) : base(logger, mediator)
     {
         _apiController = apiController;
         _dalamudUtil = dalamudUtil;

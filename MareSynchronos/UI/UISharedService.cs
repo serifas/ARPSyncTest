@@ -10,18 +10,18 @@ using Dalamud.Interface.Utility.Raii;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using Dalamud.Utility;
-using ARPSynchronos.FileCache;
-using ARPSynchronos.Interop.Ipc;
-using ARPSynchronos.Localization;
-using ARPSynchronos.ARPConfiguration;
-using ARPSynchronos.ARPConfiguration.Models;
-using ARPSynchronos.PlayerData.Pairs;
-using ARPSynchronos.Services;
-using ARPSynchronos.Services.Mediator;
-using ARPSynchronos.Services.ServerConfiguration;
-using ARPSynchronos.Utils;
-using ARPSynchronos.WebAPI;
-using ARPSynchronos.WebAPI.SignalR;
+using MareSynchronos.FileCache;
+using MareSynchronos.Interop.Ipc;
+using MareSynchronos.Localization;
+using MareSynchronos.MareConfiguration;
+using MareSynchronos.MareConfiguration.Models;
+using MareSynchronos.PlayerData.Pairs;
+using MareSynchronos.Services;
+using MareSynchronos.Services.Mediator;
+using MareSynchronos.Services.ServerConfiguration;
+using MareSynchronos.Utils;
+using MareSynchronos.WebAPI;
+using MareSynchronos.WebAPI.SignalR;
 using Microsoft.Extensions.Logging;
 using System.IdentityModel.Tokens.Jwt;
 using System.Numerics;
@@ -29,7 +29,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace ARPSynchronos.UI;
+namespace MareSynchronos.UI;
 
 public partial class UiSharedService : DisposableMediatorSubscriberBase
 {
@@ -39,11 +39,11 @@ public partial class UiSharedService : DisposableMediatorSubscriberBase
                                            ImGuiWindowFlags.NoScrollWithMouse;
 
     public readonly FileDialogManager FileDialogManager;
-    private const string _notesEnd = "##ARP_SYNCHRONOS_USER_NOTES_END##";
-    private const string _notesStart = "##ARP_SYNCHRONOS_USER_NOTES_START##";
+    private const string _notesEnd = "##MARE_SYNCHRONOS_USER_NOTES_END##";
+    private const string _notesStart = "##MARE_SYNCHRONOS_USER_NOTES_START##";
     private readonly ApiController _apiController;
     private readonly CacheMonitor _cacheMonitor;
-    private readonly ARPConfigService _configService;
+    private readonly MareConfigService _configService;
     private readonly DalamudUtilService _dalamudUtil;
     private readonly IpcManager _ipcManager;
     private readonly Dalamud.Localization _localization;
@@ -75,10 +75,10 @@ public partial class UiSharedService : DisposableMediatorSubscriberBase
     private int _serverSelectionIndex = -1;
     public UiSharedService(ILogger<UiSharedService> logger, IpcManager ipcManager, ApiController apiController,
         CacheMonitor cacheMonitor, FileDialogManager fileDialogManager,
-        ARPConfigService configService, DalamudUtilService dalamudUtil, IDalamudPluginInterface pluginInterface,
+        MareConfigService configService, DalamudUtilService dalamudUtil, IDalamudPluginInterface pluginInterface,
         ITextureProvider textureProvider,
         Dalamud.Localization localization,
-        ServerConfigurationManager serverManager, TokenProvider tokenProvider, ARPMediator mediator) : base(logger, mediator)
+        ServerConfigurationManager serverManager, TokenProvider tokenProvider, MareMediator mediator) : base(logger, mediator)
     {
         _ipcManager = ipcManager;
         _apiController = apiController;
@@ -453,16 +453,16 @@ public partial class UiSharedService : DisposableMediatorSubscriberBase
 
     public void DrawCacheDirectorySetting()
     {
-        ColorTextWrapped("Note: The storage folder should be somewhere close to root (i.e. C:\\ARPStorage) in a new empty folder. DO NOT point this to your game folder. DO NOT point this to your Penumbra folder.", ImGuiColors.DalamudYellow);
+        ColorTextWrapped("Note: The storage folder should be somewhere close to root (i.e. C:\\ARPSyncStorage) in a new empty folder. DO NOT point this to your game folder. DO NOT point this to your Penumbra folder.", ImGuiColors.DalamudYellow);
         var cacheDirectory = _configService.Current.CacheFolder;
         ImGui.InputText("Storage Folder##cache", ref cacheDirectory, 255, ImGuiInputTextFlags.ReadOnly);
 
         ImGui.SameLine();
-        using (ImRaii.Disabled(_cacheMonitor.ARPWatcher != null))
+        using (ImRaii.Disabled(_cacheMonitor.MareWatcher != null))
         {
             if (IconButton(FontAwesomeIcon.Folder))
             {
-                FileDialogManager.OpenFolderDialog("Pick ARP Synchronos Storage Folder", (success, path) =>
+                FileDialogManager.OpenFolderDialog("Pick ARPSync Storage Folder", (success, path) =>
                 {
                     if (!success) return;
 
@@ -484,7 +484,7 @@ public partial class UiSharedService : DisposableMediatorSubscriberBase
                     if (dirs.Any())
                     {
                         _cacheDirectoryHasOtherFilesThanCache = true;
-                        Logger.LogWarning("Found folders in {path} not belonging to ARP: {dirs}", path, string.Join(", ", dirs));
+                        Logger.LogWarning("Found folders in {path} not belonging to ARPSync: {dirs}", path, string.Join(", ", dirs));
                     }
 
                     _isDirectoryWritable = IsDirectoryWritable(path);
@@ -500,13 +500,13 @@ public partial class UiSharedService : DisposableMediatorSubscriberBase
                     {
                         _configService.Current.CacheFolder = path;
                         _configService.Save();
-                        _cacheMonitor.StartARPWatcher(path);
+                        _cacheMonitor.StartMareWatcher(path);
                         _cacheMonitor.InvokeScan();
                     }
                 }, _dalamudUtil.IsWine ? @"Z:\" : @"C:\");
             }
         }
-        if (_cacheMonitor.ARPWatcher != null)
+        if (_cacheMonitor.MareWatcher != null)
         {
             AttachToolTip("Stop the Monitoring before changing the Storage folder. As long as monitoring is active, you cannot change the Storage folder location.");
         }
@@ -525,7 +525,7 @@ public partial class UiSharedService : DisposableMediatorSubscriberBase
         }
         else if (_cacheDirectoryHasOtherFilesThanCache)
         {
-            ColorTextWrapped("Your selected directory has files or directories inside that are not ARP related. Use an empty directory or a previous ARP storage directory only.", ImGuiColors.DalamudRed);
+            ColorTextWrapped("Your selected directory has files or directories inside that are not ARPSync related. Use an empty directory or a previous ARPSync storage directory only.", ImGuiColors.DalamudRed);
         }
         else if (!_cacheDirectoryIsValidPath)
         {
@@ -539,7 +539,7 @@ public partial class UiSharedService : DisposableMediatorSubscriberBase
             _configService.Current.MaxLocalCacheInGiB = maxCacheSize;
             _configService.Save();
         }
-        DrawHelpText("The storage is automatically governed by ARP. It will clear itself automatically once it reaches the set capacity by removing the oldest unused files. You typically do not need to clear it yourself.");
+        DrawHelpText("The storage is automatically governed by ARPSync. It will clear itself automatically once it reaches the set capacity by removing the oldest unused files. You typically do not need to clear it yourself.");
     }
 
     public T? DrawCombo<T>(string comboName, IEnumerable<T> comboItems, Func<T?, string> toName,
@@ -811,7 +811,7 @@ public partial class UiSharedService : DisposableMediatorSubscriberBase
 
         if (!_penumbraExists || !_glamourerExists)
         {
-            ImGui.TextColored(ImGuiColors.DalamudRed, "You need to install both Penumbra and Glamourer and keep them up to date to use ARP Synchronos.");
+            ImGui.TextColored(ImGuiColors.DalamudRed, "You need to install both Penumbra and Glamourer and keep them up to date to use ARPSync.");
             return false;
         }
 

@@ -1,29 +1,29 @@
-﻿using ARPSynchronos.ARPConfiguration;
+﻿using MareSynchronos.MareConfiguration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 using System.Reflection;
 using System.Text;
 
-namespace ARPSynchronos.Services.Mediator;
+namespace MareSynchronos.Services.Mediator;
 
-public sealed class ARPMediator : IHostedService
+public sealed class MareMediator : IHostedService
 {
     private readonly object _addRemoveLock = new();
     private readonly ConcurrentDictionary<object, DateTime> _lastErrorTime = [];
-    private readonly ILogger<ARPMediator> _logger;
+    private readonly ILogger<MareMediator> _logger;
     private readonly CancellationTokenSource _loopCts = new();
     private readonly ConcurrentQueue<MessageBase> _messageQueue = new();
     private readonly PerformanceCollectorService _performanceCollector;
-    private readonly ARPConfigService _ARPConfigService;
+    private readonly MareConfigService _mareConfigService;
     private readonly ConcurrentDictionary<Type, HashSet<SubscriberAction>> _subscriberDict = [];
     private bool _processQueue = false;
     private readonly ConcurrentDictionary<Type, MethodInfo?> _genericExecuteMethods = new();
-    public ARPMediator(ILogger<ARPMediator> logger, PerformanceCollectorService performanceCollector, ARPConfigService ARPConfigService)
+    public MareMediator(ILogger<MareMediator> logger, PerformanceCollectorService performanceCollector, MareConfigService mareConfigService)
     {
         _logger = logger;
         _performanceCollector = performanceCollector;
-        _ARPConfigService = ARPConfigService;
+        _mareConfigService = mareConfigService;
     }
 
     public void PrintSubscriberInfo()
@@ -164,7 +164,7 @@ public sealed class ARPMediator : IHostedService
         {
             try
             {
-                if (_ARPConfigService.Current.LogPerformance)
+                if (_mareConfigService.Current.LogPerformance)
                 {
                     var isSameThread = message.KeepThreadContext ? "$" : string.Empty;
                     _performanceCollector.LogPerformance(this, $"{isSameThread}Execute>{message.GetType().Name}+{subscriber.Subscriber.GetType().Name}>{subscriber.Subscriber}",

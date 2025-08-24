@@ -1,10 +1,10 @@
 ﻿using Dalamud.Interface.Utility.Raii;
-using ARPSynchronos.API.Dto.CharaData;
-using ARPSynchronos.ARPConfiguration.Models;
-using ARPSynchronos.Services.CharaData.Models;
+using MareSynchronos.API.Dto.CharaData;
+using MareSynchronos.MareConfiguration.Models;
+using MareSynchronos.Services.CharaData.Models;
 using System.Text;
 
-namespace ARPSynchronos.UI;
+namespace MareSynchronos.UI;
 
 internal sealed partial class CharaDataHubUi
 {

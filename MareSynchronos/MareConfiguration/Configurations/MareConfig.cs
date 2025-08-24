@@ -1,11 +1,11 @@
-﻿using ARPSynchronos.ARPConfiguration.Models;
-using ARPSynchronos.UI;
+﻿using MareSynchronos.MareConfiguration.Models;
+using MareSynchronos.UI;
 using Microsoft.Extensions.Logging;
 
-namespace ARPSynchronos.ARPConfiguration.Configurations;
+namespace MareSynchronos.MareConfiguration.Configurations;
 
 [Serializable]
-public class ARPConfig : IARPConfiguration
+public class MareConfig : IMareConfiguration
 {
     public bool AcceptedAgreement { get; set; } = false;
     public string CacheFolder { get; set; } = string.Empty;

@@ -1,4 +1,4 @@
-﻿namespace ARPSynchronos.Services.Mediator;
+﻿namespace MareSynchronos.Services.Mediator;
 
 #pragma warning disable MA0048
 public abstract record MessageBase

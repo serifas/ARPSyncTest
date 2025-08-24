@@ -1,4 +1,4 @@
-﻿namespace ARPSynchronos.API.Data.Enum;
+﻿namespace MareSynchronos.API.Data.Enum;
 
 [Flags]
 public enum UserPermissions

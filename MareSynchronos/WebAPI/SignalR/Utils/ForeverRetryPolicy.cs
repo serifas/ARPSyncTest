@@ -1,15 +1,15 @@
-﻿using ARPSynchronos.ARPConfiguration.Models;
-using ARPSynchronos.Services.Mediator;
+﻿using MareSynchronos.MareConfiguration.Models;
+using MareSynchronos.Services.Mediator;
 using Microsoft.AspNetCore.SignalR.Client;
 
-namespace ARPSynchronos.WebAPI.SignalR.Utils;
+namespace MareSynchronos.WebAPI.SignalR.Utils;
 
 public class ForeverRetryPolicy : IRetryPolicy
 {
-    private readonly ARPMediator _mediator;
+    private readonly MareMediator _mediator;
     private bool _sentDisconnected = false;
 
-    public ForeverRetryPolicy(ARPMediator mediator)
+    public ForeverRetryPolicy(MareMediator mediator)
     {
         _mediator = mediator;
     }

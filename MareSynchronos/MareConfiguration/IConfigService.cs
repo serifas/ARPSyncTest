@@ -1,8 +1,8 @@
-﻿using ARPSynchronos.ARPConfiguration.Configurations;
+﻿using MareSynchronos.MareConfiguration.Configurations;
 
-namespace ARPSynchronos.ARPConfiguration;
+namespace MareSynchronos.MareConfiguration;
 
-public interface IConfigService<out T> : IDisposable where T : IARPConfiguration
+public interface IConfigService<out T> : IDisposable where T : IMareConfiguration
 {
     T Current { get; }
     string ConfigurationName { get; }

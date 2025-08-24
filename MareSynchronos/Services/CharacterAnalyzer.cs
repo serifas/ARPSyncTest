@@ -1,13 +1,13 @@
 ﻿using Lumina.Data.Files;
-using ARPSynchronos.API.Data;
-using ARPSynchronos.API.Data.Enum;
-using ARPSynchronos.FileCache;
-using ARPSynchronos.Services.Mediator;
-using ARPSynchronos.UI;
-using ARPSynchronos.Utils;
+using MareSynchronos.API.Data;
+using MareSynchronos.API.Data.Enum;
+using MareSynchronos.FileCache;
+using MareSynchronos.Services.Mediator;
+using MareSynchronos.UI;
+using MareSynchronos.Utils;
 using Microsoft.Extensions.Logging;
 
-namespace ARPSynchronos.Services;
+namespace MareSynchronos.Services;
 
 public sealed class CharacterAnalyzer : MediatorSubscriberBase, IDisposable
 {
@@ -17,7 +17,7 @@ public sealed class CharacterAnalyzer : MediatorSubscriberBase, IDisposable
     private CancellationTokenSource _baseAnalysisCts = new();
     private string _lastDataHash = string.Empty;
 
-    public CharacterAnalyzer(ILogger<CharacterAnalyzer> logger, ARPMediator mediator, FileCacheManager fileCacheManager, XivDataAnalyzer modelAnalyzer)
+    public CharacterAnalyzer(ILogger<CharacterAnalyzer> logger, MareMediator mediator, FileCacheManager fileCacheManager, XivDataAnalyzer modelAnalyzer)
         : base(logger, mediator)
     {
         Mediator.Subscribe<CharacterDataCreatedMessage>(this, (msg) =>
@@ -185,7 +185,7 @@ public sealed class CharacterAnalyzer : MediatorSubscriberBase, IDisposable
             LastAnalysis.Values.Sum(v => v.Values.Count),
             UiSharedService.ByteToString(LastAnalysis.Values.Sum(c => c.Values.Sum(v => v.OriginalSize))),
             UiSharedService.ByteToString(LastAnalysis.Values.Sum(c => c.Values.Sum(v => v.CompressedSize))));
-        Logger.LogInformation("IMPORTANT NOTES:\n\r- For ARP up- and downloads only the compressed size is relevant.\n\r- An unusually high total files count beyond 200 and up will also increase your download time to others significantly.");
+        Logger.LogInformation("IMPORTANT NOTES:\n\r- For ARPSync up- and downloads only the compressed size is relevant.\n\r- An unusually high total files count beyond 200 and up will also increase your download time to others significantly.");
     }
 
     internal sealed record FileDataEntry(string Hash, string FileType, List<string> GamePaths, List<string> FilePaths, long OriginalSize, long CompressedSize, long Triangles)

@@ -1,30 +1,30 @@
-﻿using ARPSynchronos.ARPConfiguration;
-using ARPSynchronos.Utils;
+﻿using MareSynchronos.MareConfiguration;
+using MareSynchronos.Utils;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 using System.Globalization;
 using System.Text;
 
-namespace ARPSynchronos.Services;
+namespace MareSynchronos.Services;
 
 public sealed class PerformanceCollectorService : IHostedService
 {
     private const string _counterSplit = "=>";
     private readonly ILogger<PerformanceCollectorService> _logger;
-    private readonly ARPConfigService _ARPConfigService;
+    private readonly MareConfigService _mareConfigService;
     public ConcurrentDictionary<string, RollingList<(TimeOnly, long)>> PerformanceCounters { get; } = new(StringComparer.Ordinal);
     private readonly CancellationTokenSource _periodicLogPruneTaskCts = new();
 
-    public PerformanceCollectorService(ILogger<PerformanceCollectorService> logger, ARPConfigService ARPConfigService)
+    public PerformanceCollectorService(ILogger<PerformanceCollectorService> logger, MareConfigService mareConfigService)
     {
         _logger = logger;
-        _ARPConfigService = ARPConfigService;
+        _mareConfigService = mareConfigService;
     }
 
-    public T LogPerformance<T>(object sender, ARPInterpolatedStringHandler counterName, Func<T> func, int maxEntries = 10000)
+    public T LogPerformance<T>(object sender, MareInterpolatedStringHandler counterName, Func<T> func, int maxEntries = 10000)
     {
-        if (!_ARPConfigService.Current.LogPerformance) return func.Invoke();
+        if (!_mareConfigService.Current.LogPerformance) return func.Invoke();
 
         string cn = sender.GetType().Name + _counterSplit + counterName.BuildMessage();
 
@@ -49,9 +49,9 @@ public sealed class PerformanceCollectorService : IHostedService
         }
     }
 
-    public void LogPerformance(object sender, ARPInterpolatedStringHandler counterName, Action act, int maxEntries = 10000)
+    public void LogPerformance(object sender, MareInterpolatedStringHandler counterName, Action act, int maxEntries = 10000)
     {
-        if (!_ARPConfigService.Current.LogPerformance) { act.Invoke(); return; }
+        if (!_mareConfigService.Current.LogPerformance) { act.Invoke(); return; }
 
         var cn = sender.GetType().Name + _counterSplit + counterName.BuildMessage();
 
@@ -93,7 +93,7 @@ public sealed class PerformanceCollectorService : IHostedService
 
     internal void PrintPerformanceStats(int limitBySeconds = 0)
     {
-        if (!_ARPConfigService.Current.LogPerformance)
+        if (!_mareConfigService.Current.LogPerformance)
         {
             _logger.LogWarning("Performance counters are disabled");
         }

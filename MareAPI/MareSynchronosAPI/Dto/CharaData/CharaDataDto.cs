@@ -1,6 +1,6 @@
-﻿using ARPSynchronos.API.Data;
+﻿using MareSynchronos.API.Data;
 
-namespace ARPSynchronos.API.Dto.CharaData;
+namespace MareSynchronos.API.Dto.CharaData;
 
 public record CharaDataDto(string Id, UserData Uploader)
 {

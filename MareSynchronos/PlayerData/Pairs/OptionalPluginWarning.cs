@@ -1,4 +1,4 @@
-﻿namespace ARPSynchronos.PlayerData.Pairs;
+﻿namespace MareSynchronos.PlayerData.Pairs;
 
 public record OptionalPluginWarning
 {

@@ -1,20 +1,20 @@
-﻿using ARPSynchronos.API.Data;
-using ARPSynchronos.FileCache;
-using ARPSynchronos.Services.CharaData.Models;
+﻿using MareSynchronos.API.Data;
+using MareSynchronos.FileCache;
+using MareSynchronos.Services.CharaData.Models;
 
-namespace ARPSynchronos.Services.CharaData;
+namespace MareSynchronos.Services.CharaData;
 
-public sealed class ARPCharaFileDataFactory
+public sealed class MareCharaFileDataFactory
 {
     private readonly FileCacheManager _fileCacheManager;
 
-    public ARPCharaFileDataFactory(FileCacheManager fileCacheManager)
+    public MareCharaFileDataFactory(FileCacheManager fileCacheManager)
     {
         _fileCacheManager = fileCacheManager;
     }
 
-    public ARPCharaFileData Create(string description, CharacterData characterCacheDto)
+    public MareCharaFileData Create(string description, CharacterData characterCacheDto)
     {
-        return new ARPCharaFileData(_fileCacheManager, description, characterCacheDto);
+        return new MareCharaFileData(_fileCacheManager, description, characterCacheDto);
     }
 }

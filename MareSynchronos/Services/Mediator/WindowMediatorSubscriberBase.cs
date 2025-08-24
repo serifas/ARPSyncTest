@@ -1,14 +1,14 @@
 ﻿using Dalamud.Interface.Windowing;
 using Microsoft.Extensions.Logging;
 
-namespace ARPSynchronos.Services.Mediator;
+namespace MareSynchronos.Services.Mediator;
 
 public abstract class WindowMediatorSubscriberBase : Window, IMediatorSubscriber, IDisposable
 {
     protected readonly ILogger _logger;
     private readonly PerformanceCollectorService _performanceCollectorService;
 
-    protected WindowMediatorSubscriberBase(ILogger logger, ARPMediator mediator, string name,
+    protected WindowMediatorSubscriberBase(ILogger logger, MareMediator mediator, string name,
         PerformanceCollectorService performanceCollectorService) : base(name)
     {
         _logger = logger;
@@ -25,7 +25,7 @@ public abstract class WindowMediatorSubscriberBase : Window, IMediatorSubscriber
         });
     }
 
-    public ARPMediator Mediator { get; }
+    public MareMediator Mediator { get; }
 
     public void Dispose()
     {

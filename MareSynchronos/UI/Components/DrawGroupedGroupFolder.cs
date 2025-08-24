@@ -1,11 +1,11 @@
 ﻿using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.Utility.Raii;
-using ARPSynchronos.UI.Handlers;
+using MareSynchronos.UI.Handlers;
 using System.Collections.Immutable;
 using System.Numerics;
 
-namespace ARPSynchronos.UI.Components;
+namespace MareSynchronos.UI.Components;
 
 public class DrawGroupedGroupFolder : IDrawFolder
 {

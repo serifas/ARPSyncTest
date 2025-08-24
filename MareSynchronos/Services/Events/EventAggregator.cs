@@ -1,9 +1,9 @@
-﻿using ARPSynchronos.Services.Mediator;
-using ARPSynchronos.Utils;
+﻿using MareSynchronos.Services.Mediator;
+using MareSynchronos.Utils;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace ARPSynchronos.Services.Events;
+namespace MareSynchronos.Services.Events;
 
 public class EventAggregator : MediatorSubscriberBase, IHostedService
 {
@@ -18,7 +18,7 @@ public class EventAggregator : MediatorSubscriberBase, IHostedService
     private string CurrentLogName => $"{DateTime.Now:yyyy-MM-dd}-events.log";
     private DateTime _currentTime;
 
-    public EventAggregator(string configDirectory, ILogger<EventAggregator> logger, ARPMediator ARPMediator) : base(logger, ARPMediator)
+    public EventAggregator(string configDirectory, ILogger<EventAggregator> logger, MareMediator mareMediator) : base(logger, mareMediator)
     {
         Mediator.Subscribe<EventMessage>(this, (msg) =>
         {

@@ -1,14 +1,14 @@
-﻿using ARPSynchronos.FileCache;
-using ARPSynchronos.Interop.Ipc;
-using ARPSynchronos.PlayerData.Handlers;
-using ARPSynchronos.PlayerData.Pairs;
-using ARPSynchronos.Services;
-using ARPSynchronos.Services.Mediator;
-using ARPSynchronos.Services.ServerConfiguration;
+﻿using MareSynchronos.FileCache;
+using MareSynchronos.Interop.Ipc;
+using MareSynchronos.PlayerData.Handlers;
+using MareSynchronos.PlayerData.Pairs;
+using MareSynchronos.Services;
+using MareSynchronos.Services.Mediator;
+using MareSynchronos.Services.ServerConfiguration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace ARPSynchronos.PlayerData.Factories;
+namespace MareSynchronos.PlayerData.Factories;
 
 public class PairHandlerFactory
 {
@@ -19,7 +19,7 @@ public class PairHandlerFactory
     private readonly IHostApplicationLifetime _hostApplicationLifetime;
     private readonly IpcManager _ipcManager;
     private readonly ILoggerFactory _loggerFactory;
-    private readonly ARPMediator _ARPMediator;
+    private readonly MareMediator _mareMediator;
     private readonly PlayerPerformanceService _playerPerformanceService;
     private readonly ServerConfigurationManager _serverConfigManager;
     private readonly PluginWarningNotificationService _pluginWarningNotificationManager;
@@ -27,7 +27,7 @@ public class PairHandlerFactory
     public PairHandlerFactory(ILoggerFactory loggerFactory, GameObjectHandlerFactory gameObjectHandlerFactory, IpcManager ipcManager,
         FileDownloadManagerFactory fileDownloadManagerFactory, DalamudUtilService dalamudUtilService,
         PluginWarningNotificationService pluginWarningNotificationManager, IHostApplicationLifetime hostApplicationLifetime,
-        FileCacheManager fileCacheManager, ARPMediator ARPMediator, PlayerPerformanceService playerPerformanceService,
+        FileCacheManager fileCacheManager, MareMediator mareMediator, PlayerPerformanceService playerPerformanceService,
         ServerConfigurationManager serverConfigManager)
     {
         _loggerFactory = loggerFactory;
@@ -38,7 +38,7 @@ public class PairHandlerFactory
         _pluginWarningNotificationManager = pluginWarningNotificationManager;
         _hostApplicationLifetime = hostApplicationLifetime;
         _fileCacheManager = fileCacheManager;
-        _ARPMediator = ARPMediator;
+        _mareMediator = mareMediator;
         _playerPerformanceService = playerPerformanceService;
         _serverConfigManager = serverConfigManager;
     }
@@ -47,6 +47,6 @@ public class PairHandlerFactory
     {
         return new PairHandler(_loggerFactory.CreateLogger<PairHandler>(), pair, _gameObjectHandlerFactory,
             _ipcManager, _fileDownloadManagerFactory.Create(), _pluginWarningNotificationManager, _dalamudUtilService, _hostApplicationLifetime,
-            _fileCacheManager, _ARPMediator, _playerPerformanceService, _serverConfigManager);
+            _fileCacheManager, _mareMediator, _playerPerformanceService, _serverConfigManager);
     }
 }

@@ -1,15 +1,15 @@
-﻿using ARPSynchronos.API.Data.Enum;
-using ARPSynchronos.ARPConfiguration;
-using ARPSynchronos.ARPConfiguration.Configurations;
-using ARPSynchronos.PlayerData.Data;
-using ARPSynchronos.PlayerData.Handlers;
-using ARPSynchronos.Services;
-using ARPSynchronos.Services.Mediator;
-using ARPSynchronos.Utils;
+﻿using MareSynchronos.API.Data.Enum;
+using MareSynchronos.MareConfiguration;
+using MareSynchronos.MareConfiguration.Configurations;
+using MareSynchronos.PlayerData.Data;
+using MareSynchronos.PlayerData.Handlers;
+using MareSynchronos.Services;
+using MareSynchronos.Services.Mediator;
+using MareSynchronos.Utils;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 
-namespace ARPSynchronos.FileCache;
+namespace MareSynchronos.FileCache;
 
 public sealed class TransientResourceManager : DisposableMediatorSubscriberBase
 {
@@ -26,7 +26,7 @@ public sealed class TransientResourceManager : DisposableMediatorSubscriberBase
     public bool IsTransientRecording { get; private set; } = false;
 
     public TransientResourceManager(ILogger<TransientResourceManager> logger, TransientConfigService configurationService,
-            DalamudUtilService dalamudUtil, ARPMediator mediator) : base(logger, mediator)
+            DalamudUtilService dalamudUtil, MareMediator mediator) : base(logger, mediator)
     {
         _configurationService = configurationService;
         _dalamudUtil = dalamudUtil;

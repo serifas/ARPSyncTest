@@ -3,20 +3,20 @@ using Dalamud.Interface;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Utility;
-using ARPSynchronos.API.Data.Enum;
-using ARPSynchronos.API.Data.Extensions;
-using ARPSynchronos.PlayerData.Pairs;
-using ARPSynchronos.Services.Mediator;
-using ARPSynchronos.WebAPI;
+using MareSynchronos.API.Data.Enum;
+using MareSynchronos.API.Data.Extensions;
+using MareSynchronos.PlayerData.Pairs;
+using MareSynchronos.Services.Mediator;
+using MareSynchronos.WebAPI;
 using System.Numerics;
 
-namespace ARPSynchronos.UI;
+namespace MareSynchronos.UI;
 
 public class TopTabMenu
 {
     private readonly ApiController _apiController;
 
-    private readonly ARPMediator _ARPMediator;
+    private readonly MareMediator _mareMediator;
 
     private readonly PairManager _pairManager;
     private readonly UiSharedService _uiSharedService;
@@ -26,9 +26,9 @@ public class TopTabMenu
     private string _pairToAdd = string.Empty;
 
     private SelectedTab _selectedTab = SelectedTab.None;
-    public TopTabMenu(ARPMediator ARPMediator, ApiController apiController, PairManager pairManager, UiSharedService uiSharedService)
+    public TopTabMenu(MareMediator mareMediator, ApiController apiController, PairManager pairManager, UiSharedService uiSharedService)
     {
-        _ARPMediator = ARPMediator;
+        _mareMediator = mareMediator;
         _apiController = apiController;
         _pairManager = pairManager;
         _uiSharedService = uiSharedService;
@@ -50,7 +50,7 @@ public class TopTabMenu
         {
             if (!string.Equals(_filter, value, StringComparison.OrdinalIgnoreCase))
             {
-                _ARPMediator.Publish(new RefreshUiMessage());
+                _mareMediator.Publish(new RefreshUiMessage());
             }
 
             _filter = value;
@@ -469,7 +469,7 @@ public class TopTabMenu
         {
             if (_uiSharedService.IconTextButton(FontAwesomeIcon.Plus, "Create new Syncshell", buttonX))
             {
-                _ARPMediator.Publish(new UiToggleMessage(typeof(CreateSyncshellUI)));
+                _mareMediator.Publish(new UiToggleMessage(typeof(CreateSyncshellUI)));
             }
             ImGui.SameLine();
         }
@@ -478,7 +478,7 @@ public class TopTabMenu
         {
             if (_uiSharedService.IconTextButton(FontAwesomeIcon.Users, "Join existing Syncshell", buttonX))
             {
-                _ARPMediator.Publish(new UiToggleMessage(typeof(JoinSyncshellUI)));
+                _mareMediator.Publish(new UiToggleMessage(typeof(JoinSyncshellUI)));
             }
         }
     }
@@ -486,20 +486,20 @@ public class TopTabMenu
     private void DrawUserConfig(float availableWidth, float spacingX)
     {
         var buttonX = (availableWidth - spacingX) / 2f;
-        if (_uiSharedService.IconTextButton(FontAwesomeIcon.UserCircle, "Edit ARP Profile", buttonX))
+        if (_uiSharedService.IconTextButton(FontAwesomeIcon.UserCircle, "Edit ARPSync Profile", buttonX))
         {
-            _ARPMediator.Publish(new UiToggleMessage(typeof(EditProfileUi)));
+            _mareMediator.Publish(new UiToggleMessage(typeof(EditProfileUi)));
         }
-        UiSharedService.AttachToolTip("Edit your ARP Profile");
+        UiSharedService.AttachToolTip("Edit your ARPSync Profile");
         ImGui.SameLine();
         if (_uiSharedService.IconTextButton(FontAwesomeIcon.PersonCircleQuestion, "Chara Data Analysis", buttonX))
         {
-            _ARPMediator.Publish(new UiToggleMessage(typeof(DataAnalysisUi)));
+            _mareMediator.Publish(new UiToggleMessage(typeof(DataAnalysisUi)));
         }
         UiSharedService.AttachToolTip("View and analyze your generated character data");
         if (_uiSharedService.IconTextButton(FontAwesomeIcon.Running, "Character Data Hub", availableWidth))
         {
-            _ARPMediator.Publish(new UiToggleMessage(typeof(CharaDataHubUi)));
+            _mareMediator.Publish(new UiToggleMessage(typeof(CharaDataHubUi)));
         }
     }
 

@@ -11,11 +11,11 @@ using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using Lumina.Excel.Sheets;
-using ARPSynchronos.API.Dto.CharaData;
-using ARPSynchronos.Interop;
-using ARPSynchronos.PlayerData.Handlers;
-using ARPSynchronos.Services.Mediator;
-using ARPSynchronos.Utils;
+using MareSynchronos.API.Dto.CharaData;
+using MareSynchronos.Interop;
+using MareSynchronos.PlayerData.Handlers;
+using MareSynchronos.Services.Mediator;
+using MareSynchronos.Utils;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Numerics;
@@ -23,7 +23,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using GameObject = FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject;
 
-namespace ARPSynchronos.Services;
+namespace MareSynchronos.Services;
 
 public class DalamudUtilService : IHostedService, IMediatorSubscriber
 {
@@ -50,7 +50,7 @@ public class DalamudUtilService : IHostedService, IMediatorSubscriber
 
     public DalamudUtilService(ILogger<DalamudUtilService> logger, IClientState clientState, IObjectTable objectTable, IFramework framework,
         IGameGui gameGui, ICondition condition, IDataManager gameData, ITargetManager targetManager, IGameConfig gameConfig,
-        BlockedCharacterHandler blockedCharacterHandler, ARPMediator mediator, PerformanceCollectorService performanceCollector)
+        BlockedCharacterHandler blockedCharacterHandler, MareMediator mediator, PerformanceCollectorService performanceCollector)
     {
         _logger = logger;
         _clientState = clientState;
@@ -161,7 +161,7 @@ public class DalamudUtilService : IHostedService, IMediatorSubscriber
     public Lazy<Dictionary<uint, string>> TerritoryData { get; private set; }
     public Lazy<Dictionary<uint, (Map Map, string MapName)>> MapData { get; private set; }
     public bool IsLodEnabled { get; private set; }
-    public ARPMediator Mediator { get; }
+    public MareMediator Mediator { get; }
 
     public IGameObject? CreateGameObject(IntPtr reference)
     {

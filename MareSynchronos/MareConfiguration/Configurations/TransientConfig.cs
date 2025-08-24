@@ -1,8 +1,8 @@
-﻿using ARPSynchronos.API.Data.Enum;
+﻿using MareSynchronos.API.Data.Enum;
 
-namespace ARPSynchronos.ARPConfiguration.Configurations;
+namespace MareSynchronos.MareConfiguration.Configurations;
 
-public class TransientConfig : IARPConfiguration
+public class TransientConfig : IMareConfiguration
 {
     public Dictionary<string, TransientPlayerConfig> TransientConfigs { get; set; } = [];
     public int Version { get; set; } = 1;

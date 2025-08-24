@@ -1,4 +1,4 @@
-﻿namespace ARPSynchronos.WebAPI.Files
+﻿namespace MareSynchronos.WebAPI.Files
 {
     /// <summary>
     ///     Class for streaming data with throttling support.

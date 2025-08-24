@@ -1,6 +1,6 @@
 ﻿using MessagePack;
 
-namespace ARPSynchronos.API.Dto.CharaData;
+namespace MareSynchronos.API.Dto.CharaData;
 
 [MessagePackObject(keyAsPropertyName: true)]
 public record CharaDataUpdateDto(string Id)

@@ -1,18 +1,18 @@
 ﻿using Dalamud.Game.ClientState.Objects.SubKinds;
 using K4os.Compression.LZ4.Legacy;
-using ARPSynchronos.API.Data;
-using ARPSynchronos.API.Data.Enum;
-using ARPSynchronos.API.Dto.CharaData;
-using ARPSynchronos.FileCache;
-using ARPSynchronos.PlayerData.Factories;
-using ARPSynchronos.PlayerData.Handlers;
-using ARPSynchronos.Services.CharaData;
-using ARPSynchronos.Services.CharaData.Models;
-using ARPSynchronos.Utils;
-using ARPSynchronos.WebAPI.Files;
+using MareSynchronos.API.Data;
+using MareSynchronos.API.Data.Enum;
+using MareSynchronos.API.Dto.CharaData;
+using MareSynchronos.FileCache;
+using MareSynchronos.PlayerData.Factories;
+using MareSynchronos.PlayerData.Handlers;
+using MareSynchronos.Services.CharaData;
+using MareSynchronos.Services.CharaData.Models;
+using MareSynchronos.Utils;
+using MareSynchronos.WebAPI.Files;
 using Microsoft.Extensions.Logging;
 
-namespace ARPSynchronos.Services;
+namespace MareSynchronos.Services;
 
 public sealed class CharaDataFileHandler : IDisposable
 {
@@ -22,7 +22,7 @@ public sealed class CharaDataFileHandler : IDisposable
     private readonly FileUploadManager _fileUploadManager;
     private readonly GameObjectHandlerFactory _gameObjectHandlerFactory;
     private readonly ILogger<CharaDataFileHandler> _logger;
-    private readonly ARPCharaFileDataFactory _ARPCharaFileDataFactory;
+    private readonly MareCharaFileDataFactory _mareCharaFileDataFactory;
     private readonly PlayerDataFactory _playerDataFactory;
     private int _globalFileCounter = 0;
 
@@ -36,7 +36,7 @@ public sealed class CharaDataFileHandler : IDisposable
         _dalamudUtilService = dalamudUtilService;
         _gameObjectHandlerFactory = gameObjectHandlerFactory;
         _playerDataFactory = playerDataFactory;
-        _ARPCharaFileDataFactory = new(fileCacheManager);
+        _mareCharaFileDataFactory = new(fileCacheManager);
     }
 
     public void ComputeMissingFiles(CharaDataDownloadDto charaDataDownloadDto, out Dictionary<string, string> modPaths, out List<FileReplacementData> missingFiles)
@@ -132,14 +132,14 @@ public sealed class CharaDataFileHandler : IDisposable
         }
     }
 
-    public Task<(ARPCharaFileHeader loadedCharaFile, long expectedLength)> LoadCharaFileHeader(string filePath)
+    public Task<(MareCharaFileHeader loadedCharaFile, long expectedLength)> LoadCharaFileHeader(string filePath)
     {
         try
         {
             using var unwrapped = File.OpenRead(filePath);
             using var lz4Stream = new LZ4Stream(unwrapped, LZ4StreamMode.Decompress, LZ4StreamFlags.HighCompression);
             using var reader = new BinaryReader(lz4Stream);
-            var loadedCharaFile = ARPCharaFileHeader.FromBinaryReader(filePath, reader);
+            var loadedCharaFile = MareCharaFileHeader.FromBinaryReader(filePath, reader);
 
             _logger.LogInformation("Read ARP Chara File");
             _logger.LogInformation("Version: {ver}", (loadedCharaFile?.Version ?? -1));
@@ -181,19 +181,19 @@ public sealed class CharaDataFileHandler : IDisposable
         }
     }
 
-    public Dictionary<string, string> McdfExtractFiles(ARPCharaFileHeader? charaFileHeader, long expectedLength, List<string> extractedFiles)
+    public Dictionary<string, string> McdfExtractFiles(MareCharaFileHeader? charaFileHeader, long expectedLength, List<string> extractedFiles)
     {
         if (charaFileHeader == null) return [];
 
         using var lz4Stream = new LZ4Stream(File.OpenRead(charaFileHeader.FilePath), LZ4StreamMode.Decompress, LZ4StreamFlags.HighCompression);
         using var reader = new BinaryReader(lz4Stream);
-        ARPCharaFileHeader.AdvanceReaderToData(reader);
+        MareCharaFileHeader.AdvanceReaderToData(reader);
 
         long totalRead = 0;
         Dictionary<string, string> gamePathToFilePath = new(StringComparer.Ordinal);
         foreach (var fileData in charaFileHeader.CharaFileData.Files)
         {
-            var fileName = Path.Combine(_fileCacheManager.CacheFolder, "ARP_" + _globalFileCounter++ + ".tmp");
+            var fileName = Path.Combine(_fileCacheManager.CacheFolder, "mare_" + _globalFileCounter++ + ".tmp");
             extractedFiles.Add(fileName);
             var length = fileData.Length;
             var bufferSize = length;
@@ -256,8 +256,8 @@ public sealed class CharaDataFileHandler : IDisposable
             var data = await CreatePlayerData().ConfigureAwait(false);
             if (data == null) return;
 
-            var ARPCharaFileData = _ARPCharaFileDataFactory.Create(description, data);
-            ARPCharaFileHeader output = new(ARPCharaFileHeader.CurrentVersion, ARPCharaFileData);
+            var mareCharaFileData = _mareCharaFileDataFactory.Create(description, data);
+            MareCharaFileHeader output = new(MareCharaFileHeader.CurrentVersion, mareCharaFileData);
 
             using var fs = new FileStream(tempFilePath, FileMode.Create, FileAccess.ReadWrite, FileShare.None);
             using var lz4 = new LZ4Stream(fs, LZ4StreamMode.Compress, LZ4StreamFlags.HighCompression);

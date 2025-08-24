@@ -1,6 +1,6 @@
-﻿using ARPSynchronos.API.Data;
+﻿using MareSynchronos.API.Data;
 
-namespace ARPSynchronos.Services.Events;
+namespace MareSynchronos.Services.Events;
 
 public record Event
 {

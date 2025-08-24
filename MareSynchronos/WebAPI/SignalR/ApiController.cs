@@ -1,62 +1,62 @@
 ﻿using Dalamud.Utility;
-using ARPSynchronos.API.Data;
-using ARPSynchronos.API.Data.Extensions;
-using ARPSynchronos.API.Dto;
-using ARPSynchronos.API.Dto.User;
-using ARPSynchronos.API.SignalR;
-using ARPSynchronos.ARPConfiguration;
-using ARPSynchronos.ARPConfiguration.Models;
-using ARPSynchronos.PlayerData.Pairs;
-using ARPSynchronos.Services;
-using ARPSynchronos.Services.Mediator;
-using ARPSynchronos.Services.ServerConfiguration;
-using ARPSynchronos.WebAPI.SignalR;
-using ARPSynchronos.WebAPI.SignalR.Utils;
+using MareSynchronos.API.Data;
+using MareSynchronos.API.Data.Extensions;
+using MareSynchronos.API.Dto;
+using MareSynchronos.API.Dto.User;
+using MareSynchronos.API.SignalR;
+using MareSynchronos.MareConfiguration;
+using MareSynchronos.MareConfiguration.Models;
+using MareSynchronos.PlayerData.Pairs;
+using MareSynchronos.Services;
+using MareSynchronos.Services.Mediator;
+using MareSynchronos.Services.ServerConfiguration;
+using MareSynchronos.WebAPI.SignalR;
+using MareSynchronos.WebAPI.SignalR.Utils;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 
-namespace ARPSynchronos.WebAPI;
+namespace MareSynchronos.WebAPI;
 
 #pragma warning disable MA0040
-public sealed partial class ApiController : DisposableMediatorSubscriberBase, IARPHubClient
+public sealed partial class ApiController : DisposableMediatorSubscriberBase, IMareHubClient
 {
-    public const string MainServer = "Lunae Crescere Incipientis (Official Central Server)";
-    public const string MainServiceUri = "wss://ARPsynchronos.com";
+    public const string MainServer = "ARP Sync (Official Central Server)";
+    public const string MainServiceUri = "wss://arpsync.absolute-roleplay.net";
 
     private readonly DalamudUtilService _dalamudUtil;
     private readonly HubFactory _hubFactory;
     private readonly PairManager _pairManager;
     private readonly ServerConfigurationManager _serverManager;
     private readonly TokenProvider _tokenProvider;
-    private readonly ARPConfigService _ARPConfigService;
+    private readonly MareConfigService _mareConfigService;
     private CancellationTokenSource _connectionCancellationTokenSource;
     private ConnectionDto? _connectionDto;
     private bool _doNotNotifyOnNextInfo = false;
     private CancellationTokenSource? _healthCheckTokenSource = new();
     private bool _initialized;
     private string? _lastUsedToken;
-    private HubConnection? _ARPHub;
+    private HubConnection? _mareHub;
     private ServerState _serverState;
     private CensusUpdateMessage? _lastCensus;
 
     public ApiController(ILogger<ApiController> logger, HubFactory hubFactory, DalamudUtilService dalamudUtil,
-        PairManager pairManager, ServerConfigurationManager serverManager, ARPMediator mediator,
-        TokenProvider tokenProvider, ARPConfigService ARPConfigService) : base(logger, mediator)
+        PairManager pairManager, ServerConfigurationManager serverManager, MareMediator mediator,
+        TokenProvider tokenProvider, MareConfigService mareConfigService) : base(logger, mediator)
     {
         _hubFactory = hubFactory;
         _dalamudUtil = dalamudUtil;
         _pairManager = pairManager;
         _serverManager = serverManager;
         _tokenProvider = tokenProvider;
-        _ARPConfigService = ARPConfigService;
+        _mareConfigService = mareConfigService;
         _connectionCancellationTokenSource = new CancellationTokenSource();
 
         Mediator.Subscribe<DalamudLoginMessage>(this, (_) => DalamudUtilOnLogIn());
         Mediator.Subscribe<DalamudLogoutMessage>(this, (_) => DalamudUtilOnLogOut());
-        Mediator.Subscribe<HubClosedMessage>(this, (msg) => ARPHubOnClosed(msg.Exception));
-        Mediator.Subscribe<HubReconnectedMessage>(this, (msg) => _ = ARPHubOnReconnectedAsync());
-        Mediator.Subscribe<HubReconnectingMessage>(this, (msg) => ARPHubOnReconnecting(msg.Exception));
+        Mediator.Subscribe<HubClosedMessage>(this, (msg) => MareHubOnClosed(msg.Exception));
+        Mediator.Subscribe<HubReconnectedMessage>(this, (msg) => _ = MareHubOnReconnectedAsync());
+        Mediator.Subscribe<HubReconnectingMessage>(this, (msg) => MareHubOnReconnecting(msg.Exception));
         Mediator.Subscribe<CyclePauseMessage>(this, (msg) => _ = CyclePauseAsync(msg.UserData));
         Mediator.Subscribe<CensusUpdateMessage>(this, (msg) => _lastCensus = msg);
         Mediator.Subscribe<PauseMessage>(this, (msg) => _ = PauseAsync(msg.UserData));
@@ -102,7 +102,7 @@ public sealed partial class ApiController : DisposableMediatorSubscriberBase, IA
 
     public async Task<bool> CheckClientHealth()
     {
-        return await _ARPHub!.InvokeAsync<bool>(nameof(CheckClientHealth)).ConfigureAwait(false);
+        return await _mareHub!.InvokeAsync<bool>(nameof(CheckClientHealth)).ConfigureAwait(false);
     }
 
     public async Task CreateConnectionsAsync()
@@ -134,7 +134,7 @@ public sealed partial class ApiController : DisposableMediatorSubscriberBase, IA
             {
                 Logger.LogWarning("Multiple secret keys for current character");
                 _connectionDto = null;
-                Mediator.Publish(new NotificationMessage("Multiple Identical Characters detected", "Your Service configuration has multiple characters with the same name and world set up. Delete the duplicates in the character management to be able to connect to ARP.",
+                Mediator.Publish(new NotificationMessage("Multiple Identical Characters detected", "Your Service configuration has multiple characters with the same name and world set up. Delete the duplicates in the character management to be able to connect to ARPSync.",
                     NotificationType.Error));
                 await StopConnectionAsync(ServerState.MultiChara).ConfigureAwait(false);
                 _connectionCancellationTokenSource?.Cancel();
@@ -157,7 +157,7 @@ public sealed partial class ApiController : DisposableMediatorSubscriberBase, IA
             {
                 Logger.LogWarning("Multiple secret keys for current character");
                 _connectionDto = null;
-                Mediator.Publish(new NotificationMessage("Multiple Identical Characters detected", "Your Service configuration has multiple characters with the same name and world set up. Delete the duplicates in the character management to be able to connect to ARP.",
+                Mediator.Publish(new NotificationMessage("Multiple Identical Characters detected", "Your Service configuration has multiple characters with the same name and world set up. Delete the duplicates in the character management to be able to connect to ARPSync.",
                     NotificationType.Error));
                 await StopConnectionAsync(ServerState.MultiChara).ConfigureAwait(false);
                 _connectionCancellationTokenSource?.Cancel();
@@ -208,7 +208,7 @@ public sealed partial class ApiController : DisposableMediatorSubscriberBase, IA
                 {
                     _lastUsedToken = await _tokenProvider.GetOrUpdateToken(token).ConfigureAwait(false);
                 }
-                catch (ARPAuthFailureException ex)
+                catch (MareAuthFailureException ex)
                 {
                     AuthFailureMessage = ex.Reason;
                     throw new HttpRequestException("Error during authentication", ex, System.Net.HttpStatusCode.Unauthorized);
@@ -222,10 +222,10 @@ public sealed partial class ApiController : DisposableMediatorSubscriberBase, IA
 
                 if (token.IsCancellationRequested) break;
 
-                _ARPHub = _hubFactory.GetOrCreate(token);
+                _mareHub = _hubFactory.GetOrCreate(token);
                 InitializeApiHooks();
 
-                await _ARPHub.StartAsync(token).ConfigureAwait(false);
+                await _mareHub.StartAsync(token).ConfigureAwait(false);
 
                 _connectionDto = await GetConnectionDto().ConfigureAwait(false);
 
@@ -233,14 +233,14 @@ public sealed partial class ApiController : DisposableMediatorSubscriberBase, IA
 
                 var currentClientVer = Assembly.GetExecutingAssembly().GetName().Version!;
 
-                if (_connectionDto.ServerVersion != IARPHub.ApiVersion)
+                if (_connectionDto.ServerVersion != IMareHub.ApiVersion)
                 {
                     if (_connectionDto.CurrentClientVersion > currentClientVer)
                     {
                         Mediator.Publish(new NotificationMessage("Client incompatible",
                             $"Your client is outdated ({currentClientVer.Major}.{currentClientVer.Minor}.{currentClientVer.Build}), current is: " +
                             $"{_connectionDto.CurrentClientVersion.Major}.{_connectionDto.CurrentClientVersion.Minor}.{_connectionDto.CurrentClientVersion.Build}. " +
-                            $"This client version is incompatible and will not be able to connect. Please update your ARP Synchronos client.",
+                            $"This client version is incompatible and will not be able to connect. Please update your ARPSync client.",
                             NotificationType.Error));
                     }
                     await StopConnectionAsync(ServerState.VersionMisMatch).ConfigureAwait(false);
@@ -252,17 +252,17 @@ public sealed partial class ApiController : DisposableMediatorSubscriberBase, IA
                     Mediator.Publish(new NotificationMessage("Client outdated",
                         $"Your client is outdated ({currentClientVer.Major}.{currentClientVer.Minor}.{currentClientVer.Build}), current is: " +
                         $"{_connectionDto.CurrentClientVersion.Major}.{_connectionDto.CurrentClientVersion.Minor}.{_connectionDto.CurrentClientVersion.Build}. " +
-                        $"Please keep your ARP Synchronos client up-to-date.",
+                        $"Please keep your ARPSync client up-to-date.",
                         NotificationType.Warning));
                 }
 
                 if (_dalamudUtil.HasModifiedGameFiles)
                 {
                     Logger.LogError("Detected modified game files on connection");
-                    if (!_ARPConfigService.Current.DebugStopWhining)
+                    if (!_mareConfigService.Current.DebugStopWhining)
                         Mediator.Publish(new NotificationMessage("Modified Game Files detected",
                             "Dalamud is reporting your FFXIV installation has modified game files. Any mods installed through TexTools will produce this message. " +
-                            "ARP Synchronos, Penumbra, and some other plugins assume your FFXIV installation is unmodified in order to work. " +
+                            "ARPSync, Penumbra, and some other plugins assume your FFXIV installation is unmodified in order to work. " +
                             "Synchronization with pairs/shells can break because of this. Exit the game, open XIVLauncher, click the arrow next to Log In " +
                             "and select 'repair game files' to resolve this issue. Afterwards, do not install any mods with TexTools. Your plugin configurations will remain, as will mods enabled in Penumbra.",
                             NotificationType.Error, TimeSpan.FromSeconds(15)));
@@ -272,11 +272,11 @@ public sealed partial class ApiController : DisposableMediatorSubscriberBase, IA
                 {
                     _naggedAboutLod = true;
                     Logger.LogWarning("Model LOD is enabled during connection");
-                    if (!_ARPConfigService.Current.DebugStopWhining)
+                    if (!_mareConfigService.Current.DebugStopWhining)
                     {
                         Mediator.Publish(new NotificationMessage("Model LOD is enabled",
                             "You have \"Use low-detail models on distant objects (LOD)\" enabled. Having model LOD enabled is known to be a reason to cause " +
-                            "random crashes when loading in or rendering modded pairs. Disabling LOD has a very low performance impact. Disable LOD while using ARP: " +
+                            "random crashes when loading in or rendering modded pairs. Disabling LOD has a very low performance impact. Disable LOD while using ARPSync: " +
                             "Go to XIV Menu -> System Configuration -> Graphics Settings and disable the model LOD option.", NotificationType.Warning, TimeSpan.FromSeconds(15)));
                     }
                 }
@@ -361,7 +361,7 @@ public sealed partial class ApiController : DisposableMediatorSubscriberBase, IA
 
     public async Task<ConnectionDto> GetConnectionDtoAsync(bool publishConnected)
     {
-        var dto = await _ARPHub!.InvokeAsync<ConnectionDto>(nameof(GetConnectionDto)).ConfigureAwait(false);
+        var dto = await _mareHub!.InvokeAsync<ConnectionDto>(nameof(GetConnectionDto)).ConfigureAwait(false);
         if (publishConnected) Mediator.Publish(new ConnectedMessage(dto));
         return dto;
     }
@@ -377,7 +377,7 @@ public sealed partial class ApiController : DisposableMediatorSubscriberBase, IA
 
     private async Task ClientHealthCheckAsync(CancellationToken ct)
     {
-        while (!ct.IsCancellationRequested && _ARPHub != null)
+        while (!ct.IsCancellationRequested && _mareHub != null)
         {
             await Task.Delay(TimeSpan.FromSeconds(30), ct).ConfigureAwait(false);
             Logger.LogDebug("Checking Client Health State");
@@ -415,7 +415,7 @@ public sealed partial class ApiController : DisposableMediatorSubscriberBase, IA
 
     private void InitializeApiHooks()
     {
-        if (_ARPHub == null) return;
+        if (_mareHub == null) return;
 
         Logger.LogDebug("Initializing data");
         OnDownloadReady((guid) => _ = Client_DownloadReady(guid));
@@ -489,7 +489,7 @@ public sealed partial class ApiController : DisposableMediatorSubscriberBase, IA
         }
     }
 
-    private void ARPHubOnClosed(Exception? arg)
+    private void MareHubOnClosed(Exception? arg)
     {
         _healthCheckTokenSource?.Cancel();
         Mediator.Publish(new DisconnectedMessage());
@@ -504,14 +504,14 @@ public sealed partial class ApiController : DisposableMediatorSubscriberBase, IA
         }
     }
 
-    private async Task ARPHubOnReconnectedAsync()
+    private async Task MareHubOnReconnectedAsync()
     {
         ServerState = ServerState.Reconnecting;
         try
         {
             InitializeApiHooks();
             _connectionDto = await GetConnectionDtoAsync(publishConnected: false).ConfigureAwait(false);
-            if (_connectionDto.ServerVersion != IARPHub.ApiVersion)
+            if (_connectionDto.ServerVersion != IMareHub.ApiVersion)
             {
                 await StopConnectionAsync(ServerState.VersionMisMatch).ConfigureAwait(false);
                 return;
@@ -528,7 +528,7 @@ public sealed partial class ApiController : DisposableMediatorSubscriberBase, IA
         }
     }
 
-    private void ARPHubOnReconnecting(Exception? arg)
+    private void MareHubOnReconnecting(Exception? arg)
     {
         _doNotNotifyOnNextInfo = true;
         _healthCheckTokenSource?.Cancel();
@@ -554,7 +554,7 @@ public sealed partial class ApiController : DisposableMediatorSubscriberBase, IA
                 requireReconnect = true;
             }
         }
-        catch (ARPAuthFailureException ex)
+        catch (MareAuthFailureException ex)
         {
             AuthFailureMessage = ex.Reason;
             await StopConnectionAsync(ServerState.Unauthorized).ConfigureAwait(false);
@@ -578,7 +578,7 @@ public sealed partial class ApiController : DisposableMediatorSubscriberBase, IA
         Logger.LogInformation("Stopping existing connection");
         await _hubFactory.DisposeHubAsync().ConfigureAwait(false);
 
-        if (_ARPHub is not null)
+        if (_mareHub is not null)
         {
             Mediator.Publish(new EventMessage(new Services.Events.Event(nameof(ApiController), Services.Events.EventSeverity.Informational,
                 $"Stopping existing connection to {_serverManager.CurrentServer.ServerName}")));
@@ -586,7 +586,7 @@ public sealed partial class ApiController : DisposableMediatorSubscriberBase, IA
             _initialized = false;
             _healthCheckTokenSource?.Cancel();
             Mediator.Publish(new DisconnectedMessage());
-            _ARPHub = null;
+            _mareHub = null;
             _connectionDto = null;
         }
 

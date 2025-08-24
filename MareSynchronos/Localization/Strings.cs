@@ -1,6 +1,6 @@
 ﻿using CheapLoc;
 
-namespace ARPSynchronos.Localization;
+namespace MareSynchronos.Localization;
 
 public static class Strings
 {

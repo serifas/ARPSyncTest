@@ -1,8 +1,8 @@
-﻿using ARPSynchronos.API.Data;
+﻿using MareSynchronos.API.Data;
 
 using System.Text.RegularExpressions;
 
-namespace ARPSynchronos.PlayerData.Data;
+namespace MareSynchronos.PlayerData.Data;
 
 public partial class FileReplacement
 {

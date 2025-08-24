@@ -1,21 +1,21 @@
-﻿using ARPSynchronos.API.Data;
-using ARPSynchronos.FileCache;
-using ARPSynchronos.Interop.Ipc;
-using ARPSynchronos.PlayerData.Factories;
-using ARPSynchronos.PlayerData.Pairs;
-using ARPSynchronos.Services;
-using ARPSynchronos.Services.Events;
-using ARPSynchronos.Services.Mediator;
-using ARPSynchronos.Services.ServerConfiguration;
-using ARPSynchronos.Utils;
-using ARPSynchronos.WebAPI.Files;
+﻿using MareSynchronos.API.Data;
+using MareSynchronos.FileCache;
+using MareSynchronos.Interop.Ipc;
+using MareSynchronos.PlayerData.Factories;
+using MareSynchronos.PlayerData.Pairs;
+using MareSynchronos.Services;
+using MareSynchronos.Services.Events;
+using MareSynchronos.Services.Mediator;
+using MareSynchronos.Services.ServerConfiguration;
+using MareSynchronos.Utils;
+using MareSynchronos.WebAPI.Files;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 using System.Diagnostics;
-using ObjectKind = ARPSynchronos.API.Data.Enum.ObjectKind;
+using ObjectKind = MareSynchronos.API.Data.Enum.ObjectKind;
 
-namespace ARPSynchronos.PlayerData.Handlers;
+namespace MareSynchronos.PlayerData.Handlers;
 
 public sealed class PairHandler : DisposableMediatorSubscriberBase
 {
@@ -48,7 +48,7 @@ public sealed class PairHandler : DisposableMediatorSubscriberBase
         IpcManager ipcManager, FileDownloadManager transferManager,
         PluginWarningNotificationService pluginWarningNotificationManager,
         DalamudUtilService dalamudUtil, IHostApplicationLifetime lifetime,
-        FileCacheManager fileDbManager, ARPMediator mediator,
+        FileCacheManager fileDbManager, MareMediator mediator,
         PlayerPerformanceService playerPerformanceService,
         ServerConfigurationManager serverConfigManager) : base(logger, mediator)
     {

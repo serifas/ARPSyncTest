@@ -1,7 +1,7 @@
 ﻿
 using System.Collections.Immutable;
 
-namespace ARPSynchronos.UI.Components;
+namespace MareSynchronos.UI.Components;
 
 public interface IDrawFolder
 {

@@ -1,18 +1,18 @@
 ﻿using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.Utility.Raii;
-using ARPSynchronos.API.Dto.Group;
-using ARPSynchronos.ARPConfiguration;
-using ARPSynchronos.PlayerData.Pairs;
-using ARPSynchronos.Services.Mediator;
-using ARPSynchronos.Services.ServerConfiguration;
+using MareSynchronos.API.Dto.Group;
+using MareSynchronos.MareConfiguration;
+using MareSynchronos.PlayerData.Pairs;
+using MareSynchronos.Services.Mediator;
+using MareSynchronos.Services.ServerConfiguration;
 
-namespace ARPSynchronos.UI.Handlers;
+namespace MareSynchronos.UI.Handlers;
 
 public class IdDisplayHandler
 {
-    private readonly ARPConfigService _ARPConfigService;
-    private readonly ARPMediator _mediator;
+    private readonly MareConfigService _mareConfigService;
+    private readonly MareMediator _mediator;
     private readonly ServerConfigurationManager _serverManager;
     private readonly Dictionary<string, bool> _showIdForEntry = new(StringComparer.Ordinal);
     private string _editComment = string.Empty;
@@ -22,11 +22,11 @@ public class IdDisplayHandler
     private bool _popupShown = false;
     private DateTime? _popupTime;
 
-    public IdDisplayHandler(ARPMediator mediator, ServerConfigurationManager serverManager, ARPConfigService ARPConfigService)
+    public IdDisplayHandler(MareMediator mediator, ServerConfigurationManager serverManager, MareConfigService mareConfigService)
     {
         _mediator = mediator;
         _serverManager = serverManager;
-        _ARPConfigService = ARPConfigService;
+        _mareConfigService = mareConfigService;
     }
 
     public void DrawGroupText(string id, GroupFullInfoDto group, float textPosX, Func<float> editBoxWidth)
@@ -99,12 +99,12 @@ public class IdDisplayHandler
             {
                 if (!string.Equals(_lastMouseOverUid, id))
                 {
-                    _popupTime = DateTime.UtcNow.AddSeconds(_ARPConfigService.Current.ProfileDelay);
+                    _popupTime = DateTime.UtcNow.AddSeconds(_mareConfigService.Current.ProfileDelay);
                 }
 
                 _lastMouseOverUid = id;
 
-                if (_popupTime > DateTime.UtcNow || !_ARPConfigService.Current.ProfilesShow)
+                if (_popupTime > DateTime.UtcNow || !_mareConfigService.Current.ProfilesShow)
                 {
                     ImGui.SetTooltip("Left click to switch between UID display and nick" + Environment.NewLine
                         + "Right click to change nick for " + pair.UserData.AliasOrUID + Environment.NewLine
@@ -222,11 +222,11 @@ public class IdDisplayHandler
             playerText = pair.UserData.AliasOrUID;
         }
 
-        if (_ARPConfigService.Current.ShowCharacterNameInsteadOfNotesForVisible && pair.IsVisible && !showUidInsteadOfName)
+        if (_mareConfigService.Current.ShowCharacterNameInsteadOfNotesForVisible && pair.IsVisible && !showUidInsteadOfName)
         {
             playerText = pair.PlayerName;
             textIsUid = false;
-            if (_ARPConfigService.Current.PreferNotesOverNamesForVisible)
+            if (_mareConfigService.Current.PreferNotesOverNamesForVisible)
             {
                 var note = pair.GetNote();
                 if (note != null)
