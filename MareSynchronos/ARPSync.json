@@ -1,9 +1,9 @@
 {
-  "Author": "darkarchon",
-  "Name": "Mare Synchronos",
-  "Punchline": "Let others see you as you see yourself.",
-  "Description": "This plugin will synchronize your Penumbra mods and current Glamourer state with other paired clients automatically.",
-  "InternalName": "mareSynchronos",
+  "Author": "lynie",
+  "Name": "ARP Sync",
+  "Punchline": "Make yourself how you want.",
+  "Description": "Make yourself how you want.",
+  "InternalName": "arpSync",
   "ApplicableVersion": "any",
   "Tags": [
     "customization"
