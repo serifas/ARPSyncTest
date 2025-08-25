@@ -215,6 +215,7 @@ public sealed class IpcCallerPenumbra : DisposableMediatorSubscriberBase, IIpcCa
 
         return await _dalamudUtil.RunOnFrameworkThread(() =>
         {
+            Guid collection;
             var collName = "Mare_" + uid;
             var collId = _penumbraCreateNamedTemporaryCollection.Invoke(collName);
             logger.LogTrace("Creating Temp Collection {collName}, GUID: {collId}", collName, collId);

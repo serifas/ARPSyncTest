@@ -204,7 +204,7 @@ public partial class IntroUi : WindowMediatorSubscriberBase
 
             if (ImGui.Button("Join the ARPSync Discord"))
             {
-                Util.OpenLink("https://discord.gg/mpNdkrTRjW");
+                Util.OpenLink("https://discord.gg/absolute-roleplay");
             }
 
             UiSharedService.TextWrapped("For all other non official services you will have to contact the appropriate service provider how to obtain a secret key.");
