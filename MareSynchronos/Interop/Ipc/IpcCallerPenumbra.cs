@@ -217,10 +217,9 @@ public sealed class IpcCallerPenumbra : DisposableMediatorSubscriberBase, IIpcCa
         {
             Guid collection;
             var collName = "Mare_" + uid;
-            var collId = _penumbraCreateNamedTemporaryCollection.Invoke(collName);
-            logger.LogTrace("Creating Temp Collection {collName}, GUID: {collId}", collName, collId);
-            return collId;
-
+            var result = _penumbraCreateNamedTemporaryCollection.Invoke("ARPSync", collName, out collection);
+            logger.LogTrace("Creating Temp Collection {collName}, Result: {result}, GUID: {collection}", collName, result, collection);
+            return collection; // Return the Guid, not the result
         }).ConfigureAwait(false);
     }
 
